@@ -3,6 +3,7 @@ import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
+import { moodScale } from '../lib/palette';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
@@ -93,6 +94,17 @@ export default function Today() {
           how are you feeling today?
         </label>
         <Trackbar value={score} onChange={setScore} />
+        <div className="flex items-center gap-1 mt-1">
+          <span className="text-[9px] text-gray-400">0</span>
+          {moodScale.map((color, i) => (
+            <div
+              key={i}
+              className="w-[10px] h-[10px] rounded-sm"
+              style={{ backgroundColor: color }}
+            />
+          ))}
+          <span className="text-[9px] text-gray-400">10</span>
+        </div>
       </div>
 
       <div>

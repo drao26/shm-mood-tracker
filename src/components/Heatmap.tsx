@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { getMoodColor, emptyColor } from '../lib/palette';
+import { getMoodColor, moodScale, emptyColor } from '../lib/palette';
 
 interface HeatmapEntry {
   date: string;
@@ -64,21 +64,13 @@ export default function Heatmap({ entries, label }: HeatmapProps) {
       weeks.push(currentWeek);
     }
 
-    // Reverse so most recent month is on the left
-    const totalWeeks = weeks.length;
-    weeks.reverse();
-    const reversedMonthLabels = monthLabels.map((m, i) => {
-      const endCol = i < monthLabels.length - 1 ? monthLabels[i + 1].col - 1 : totalWeeks - 1;
-      return { label: m.label, col: totalWeeks - 1 - endCol };
-    });
-
     const dayLabels = [
       { label: 'mon', row: 0 },
       { label: 'wed', row: 2 },
       { label: 'fri', row: 4 },
     ];
 
-    return { weeks, monthLabels: reversedMonthLabels, dayLabels };
+    return { weeks, monthLabels, dayLabels };
   }, [entries]);
 
   const cellSize = 13;
@@ -176,6 +168,19 @@ export default function Heatmap({ entries, label }: HeatmapProps) {
           {tooltip.date} · {tooltip.score}/10
         </div>
       )}
+
+      {/* color key */}
+      <div className="flex items-center gap-1 mt-2">
+        <span className="text-[9px] text-gray-400">0</span>
+        {moodScale.map((color, i) => (
+          <div
+            key={i}
+            className="w-[10px] h-[10px] rounded-sm"
+            style={{ backgroundColor: color }}
+          />
+        ))}
+        <span className="text-[9px] text-gray-400">10</span>
+      </div>
     </div>
   );
 }
