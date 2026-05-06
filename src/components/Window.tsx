@@ -2,18 +2,11 @@ import React, { useRef, useState, useCallback } from 'react';
 
 export type WindowTone = 'mint' | 'lavender' | 'peach' | 'butter' | 'pink';
 
-const toneGradients: Record<WindowTone, [string, string]> = {
-  mint: ['#d4899e', '#e8a8b8'],
-  lavender: ['#c0b8e8', '#e0d8f5'],
-  peach: ['#f0c8a8', '#f8e8d8'],
-  butter: ['#e8e0a0', '#f5f0d0'],
-  pink: ['#c47090', '#d4899e'],
-};
-
 interface WindowProps {
   id?: string;
   title: string;
   tone?: WindowTone;
+  icon?: string;
   active?: boolean;
   maximised?: boolean;
   children: React.ReactNode;
@@ -22,12 +15,13 @@ interface WindowProps {
   onMaximise?: () => void;
   onFocus?: () => void;
   draggable?: boolean;
+  resizable?: boolean;
   style?: React.CSSProperties;
 }
 
 export default function Window({
   title,
-  tone = 'mint',
+  icon,
   active = true,
   maximised = false,
   children,
@@ -36,16 +30,18 @@ export default function Window({
   onMaximise,
   onFocus,
   draggable = false,
+  resizable = false,
   style,
 }: WindowProps) {
-  const [grad1, grad2] = toneGradients[tone];
   const titleBg = active
-    ? `linear-gradient(to right, ${grad1}, ${grad2})`
+    ? `linear-gradient(to right, var(--accent), var(--accent-light))`
     : `linear-gradient(to right, var(--title-inactive), var(--title-inactive))`;
 
   const windowRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const dragStart = useRef<{ mx: number; my: number; x: number; y: number } | null>(null);
+  const resizeStart = useRef<{ mx: number; my: number; w: number; h: number } | null>(null);
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -76,15 +72,49 @@ export default function Window({
     dragStart.current = null;
   }, []);
 
+  const handleResizePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!resizable || maximised) return;
+      e.stopPropagation();
+      onFocus?.();
+      const el = windowRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      resizeStart.current = { mx: e.clientX, my: e.clientY, w: rect.width, h: rect.height };
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    },
+    [resizable, maximised, onFocus]
+  );
+
+  const handleResizePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!resizeStart.current) return;
+      const dx = e.clientX - resizeStart.current.mx;
+      const dy = e.clientY - resizeStart.current.my;
+      const nw = Math.max(200, resizeStart.current.w + dx);
+      const nh = Math.max(100, resizeStart.current.h + dy);
+      setSize({ w: nw, h: nh });
+    },
+    []
+  );
+
+  const handleResizePointerUp = useCallback(() => {
+    resizeStart.current = null;
+  }, []);
+
   const positionStyle: React.CSSProperties = draggable && pos && !maximised
     ? { position: 'absolute', left: pos.x, top: pos.y }
+    : {};
+
+  const sizeStyle: React.CSSProperties = resizable && size && !maximised
+    ? { width: size.w, height: size.h }
     : {};
 
   return (
     <div
       ref={windowRef}
-      className={`bg-[var(--chrome)] border-2 border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-darker)] border-r-[var(--chrome-darker)] shadow-md flex flex-col ${maximised ? 'fixed inset-0 z-50' : ''}`}
-      style={{ ...positionStyle, ...style }}
+      className={`relative bg-[var(--chrome)] border-2 border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-darker)] border-r-[var(--chrome-darker)] shadow-md flex flex-col ${maximised ? 'fixed inset-0 z-50' : ''}`}
+      style={{ ...positionStyle, ...sizeStyle, ...style }}
       onMouseDown={() => onFocus?.()}
     >
       {/* title bar */}
@@ -95,8 +125,11 @@ export default function Window({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* TODO: replace placeholder, expects 16x16 window icon PNG */}
-        <div className="w-[16px] h-[14px] border border-dashed border-white/50 shrink-0" />
+        {icon ? (
+          <img src={icon} alt="" className="w-[16px] h-[14px] object-contain shrink-0" />
+        ) : (
+          <div className="w-[16px] h-[14px] border border-dashed border-white/50 shrink-0" />
+        )}
         <span className="text-[12px] font-bold text-[var(--text-inverse)] truncate flex-1">
           {title}
         </span>
@@ -129,6 +162,21 @@ export default function Window({
       <div className="border-2 border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] m-[2px] p-2 bg-white flex-1 overflow-auto text-[12px]">
         {children}
       </div>
+      {/* resize grip */}
+      {resizable && !maximised && (
+        <div
+          className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"
+          onPointerDown={handleResizePointerDown}
+          onPointerMove={handleResizePointerMove}
+          onPointerUp={handleResizePointerUp}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" className="text-[var(--chrome-dark)]">
+            <line x1="14" y1="6" x2="6" y2="14" stroke="currentColor" strokeWidth="1" />
+            <line x1="14" y1="9" x2="9" y2="14" stroke="currentColor" strokeWidth="1" />
+            <line x1="14" y1="12" x2="12" y2="14" stroke="currentColor" strokeWidth="1" />
+          </svg>
+        </div>
+      )}
     </div>
   );
 }

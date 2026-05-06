@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Desktop, { MobileShell } from './components/Desktop';
 import Home from './pages/Home';
+import { getDailyPalette } from './lib/palette';
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(window.innerWidth < 768);
@@ -12,7 +13,18 @@ function useIsMobile() {
   return mobile;
 }
 
+function useDailyTheme() {
+  useEffect(() => {
+    const { bg, accent, accentLight } = getDailyPalette();
+    const root = document.documentElement;
+    root.style.setProperty('--desktop-bg', bg);
+    root.style.setProperty('--accent', accent);
+    root.style.setProperty('--accent-light', accentLight);
+  }, []);
+}
+
 export default function App() {
+  useDailyTheme();
   const [userName, setUserName] = useState<string | null>(
     localStorage.getItem('shm-user')
   );

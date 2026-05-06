@@ -1,3 +1,4 @@
+import { useCallback, useRef } from 'react';
 import { getSliderGradient } from '../lib/palette';
 
 interface TrackbarProps {
@@ -12,12 +13,23 @@ const emojis = ['🌧️', '🌧️', '🌧️', '☁️', '☁️', '🌤️', 
 export default function Trackbar({ value, min = 0, max = 10, onChange }: TrackbarProps) {
   const steps = max - min;
   const pct = ((value - min) / steps) * 100;
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const ratio = Math.max(0, Math.min(1, x / rect.width));
+  const computeValue = useCallback((clientX: number) => {
+    const rect = trackRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     onChange(Math.round(ratio * steps + min));
+  }, [steps, min, onChange]);
+
+  function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    computeValue(e.clientX);
+  }
+
+  function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.buttons === 0) return;
+    computeValue(e.clientX);
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -32,8 +44,10 @@ export default function Trackbar({ value, min = 0, max = 10, onChange }: Trackba
     <div className="w-full select-none">
       {/* track area */}
       <div
-        className="relative h-[20px] flex items-center cursor-pointer"
-        onClick={handleClick}
+        ref={trackRef}
+        className="relative h-[20px] flex items-center cursor-pointer touch-none"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
         role="slider"
         aria-valuenow={value}
         aria-valuemin={min}

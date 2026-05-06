@@ -101,6 +101,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
               active={w.id === desktop.activeId}
               maximised={w.maximised}
               draggable
+              resizable
               onClose={() => desktop.close(w.id)}
               onMinimise={() => desktop.minimise(w.id)}
               onMaximise={() => desktop.maximise(w.id)}

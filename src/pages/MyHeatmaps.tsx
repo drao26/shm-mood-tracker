@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Heatmap from '../components/Heatmap';
-import WordCloud from '../components/WordCloud';
 import { getMoodsForUser, isSupabaseConfigured, MoodEntry } from '../lib/supabase';
 
 interface MyHeatmapsProps {
@@ -73,14 +72,26 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
         <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s mood heatmap</p>
         <Heatmap entries={heatmapEntries} />
       </div>
-      <div>
-        <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s gratitude cloud</p>
-        <WordCloud texts={gratitudeTexts} />
-      </div>
-      <div>
-        <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s rant cloud</p>
-        <WordCloud texts={rantTexts} />
-      </div>
+      {gratitudeTexts.length > 0 && (
+        <div>
+          <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s gratitudes</p>
+          <ul className="space-y-1">
+            {gratitudeTexts.map((text, i) => (
+              <li key={i} className="text-[11px] text-[var(--text)]">"{text}"</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {rantTexts.length > 0 && (
+        <div>
+          <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s rants</p>
+          <ul className="space-y-1">
+            {rantTexts.map((text, i) => (
+              <li key={i} className="text-[11px] text-[var(--text)]">"{text}"</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -50,3 +50,30 @@ export function getTitleBarColor(index: number): string {
 export function getSliderGradient(): string {
   return `linear-gradient(to right, ${moodScale.join(', ')})`;
 }
+
+const dailyBackgrounds: string[] = [
+  '#f5d0e0', // pink
+  '#d0f0e0', // mint
+  '#e0d8f5', // lavender
+  '#f5e0d0', // peach
+  '#f5f0d0', // butter
+  '#d0e8f5', // baby blue
+  '#f5d0d0', // coral
+];
+
+function darkenHex(hex: string, factor: number): string {
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+export function getDailyPalette() {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  const bg = dailyBackgrounds[dayOfYear % dailyBackgrounds.length];
+  const accent = darkenHex(bg, 0.72);
+  const accentLight = darkenHex(bg, 0.85);
+  return { bg, accent, accentLight };
+}
