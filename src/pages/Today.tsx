@@ -6,7 +6,9 @@ import { getTodayMood, upsertMood } from '../lib/supabase';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const todayDisplay = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
 
   const [score, setScore] = useState(5);
   const [gratitude, setGratitude] = useState('');
@@ -49,7 +51,7 @@ export default function Today() {
   return (
     <div className="space-y-3">
       <p className="text-[11px] text-[var(--text)]">
-        hey {name} · {today}
+        hey {name} · {todayDisplay}
       </p>
 
       <div>
@@ -85,7 +87,7 @@ export default function Today() {
         {!saved ? (
           <Button95 onClick={handleSave} className="w-[75px]">save</Button95>
         ) : (
-          <p className="text-[11px] text-[var(--text)]">logged for {today} ✓</p>
+          <p className="text-[11px] text-[var(--text)]">logged for {todayDisplay} ✓</p>
         )}
       </div>
     </div>

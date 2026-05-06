@@ -3,11 +3,11 @@ import React, { useRef, useState, useCallback } from 'react';
 export type WindowTone = 'mint' | 'lavender' | 'peach' | 'butter' | 'pink';
 
 const toneGradients: Record<WindowTone, [string, string]> = {
-  mint: ['#a8e0c0', '#d8f0e0'],
+  mint: ['#d4899e', '#e8a8b8'],
   lavender: ['#c0b8e8', '#e0d8f5'],
   peach: ['#f0c8a8', '#f8e8d8'],
   butter: ['#e8e0a0', '#f5f0d0'],
-  pink: ['#f0b8d0', '#f8d8e8'],
+  pink: ['#c47090', '#d4899e'],
 };
 
 interface WindowProps {
