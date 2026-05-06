@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
-import { getTodayMood, upsertMood } from '../lib/supabase';
+import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
@@ -15,17 +15,47 @@ export default function Today() {
   const [rant, setRant] = useState('');
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!name) { setLoading(false); return; }
-    getTodayMood(name, today).then((existing) => {
-      if (existing) {
-        setScore(existing.score);
-        setGratitude(existing.gratitude ?? '');
-        setRant(existing.rant ?? '');
+    let cancelled = false;
+
+    async function loadTodayMood() {
+      if (!name) {
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-    });
+
+      if (!isSupabaseConfigured) {
+        setError('supabase is not configured');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const existing = await getTodayMood(name, today);
+        if (cancelled) return;
+        if (existing) {
+          setScore(existing.score);
+          setGratitude(existing.gratitude ?? '');
+          setRant(existing.rant ?? '');
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'failed to load today\'s mood');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadTodayMood();
+
+    return () => {
+      cancelled = true;
+    };
   }, [name, today]);
 
   async function handleSave() {
@@ -46,6 +76,10 @@ export default function Today() {
 
   if (!name) {
     return <p className="text-[11px] text-[var(--text)]">please pick a user first</p>;
+  }
+
+  if (error) {
+    return <p className="text-[11px] text-[var(--text)]">{error}</p>;
   }
 
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Heatmap from '../components/Heatmap';
 import WordCloud from '../components/WordCloud';
-import { getMoodsForUser, MoodEntry } from '../lib/supabase';
+import { getMoodsForUser, isSupabaseConfigured, MoodEntry } from '../lib/supabase';
 
 interface MyHeatmapsProps {
   overrideName?: string;
@@ -11,13 +11,44 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
   const name = overrideName ?? localStorage.getItem('shm-user');
   const [moods, setMoods] = useState<MoodEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!name) { setLoading(false); return; }
-    getMoodsForUser(name).then((data) => {
-      setMoods(data);
-      setLoading(false);
-    });
+    let cancelled = false;
+
+    async function loadMoods() {
+      if (!name) {
+        setLoading(false);
+        return;
+      }
+
+      if (!isSupabaseConfigured) {
+        setError('supabase is not configured');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const data = await getMoodsForUser(name);
+        if (!cancelled) {
+          setMoods(data);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'failed to load moods');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadMoods();
+
+    return () => {
+      cancelled = true;
+    };
   }, [name]);
 
   if (loading) {
@@ -26,6 +57,10 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
 
   if (!name) {
     return <p className="text-[11px] text-[var(--text)]">please pick a user first</p>;
+  }
+
+  if (error) {
+    return <p className="text-[11px] text-[var(--text)]">{error}</p>;
   }
 
   const heatmapEntries = moods.map((m) => ({ date: m.date, score: m.score }));

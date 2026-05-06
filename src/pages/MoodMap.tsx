@@ -1,20 +1,51 @@
 import { useEffect, useState } from 'react';
 import Heatmap from '../components/Heatmap';
-import { getAllMoods, MoodEntry } from '../lib/supabase';
+import { getAllMoods, isSupabaseConfigured, MoodEntry } from '../lib/supabase';
 
 export default function MoodMap() {
   const [moods, setMoods] = useState<MoodEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getAllMoods().then((data) => {
-      setMoods(data);
-      setLoading(false);
-    });
+    let cancelled = false;
+
+    async function loadAllMoods() {
+      if (!isSupabaseConfigured) {
+        setError('supabase is not configured');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const data = await getAllMoods();
+        if (!cancelled) {
+          setMoods(data);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'failed to load mood map');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadAllMoods();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
     return <p className="text-[11px] text-[var(--text)]">loading...</p>;
+  }
+
+  if (error) {
+    return <p className="text-[11px] text-[var(--text)]">{error}</p>;
   }
 
   const dateScores = new Map<string, number[]>();
