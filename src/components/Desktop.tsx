@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DesktopIcon from './DesktopIcon';
 import Taskbar from './Taskbar';
 import Window, { WindowTone } from './Window';
@@ -60,6 +60,11 @@ function WindowContent({ id }: { id: string; userName: string | null }) {
 export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   const desktop = useDesktop();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+
+  // Auto-open today's check-in on first load
+  useEffect(() => {
+    desktop.open('today', "today's check-in", 'mint');
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleIconOpen(icon: IconDef) {
     desktop.open(icon.id, icon.title, icon.tone);
