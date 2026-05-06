@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "MS Sans Serif";
+  src: url("/fonts/ms_sans_serif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MS Sans Serif";
+  src: url("/fonts/ms_sans_serif_bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+}
+
 /* Win95 Chrome Palette */
 :root {
   --chrome:        #eeebf5;
@@ -19,7 +33,7 @@
 
 /* Chrome font stack */
 * {
-  font-family: "MS Sans Serif", "Pixelated MS Sans Serif", Tahoma, sans-serif;
+  font-family: "MS Sans Serif", sans-serif;
   box-sizing: border-box;
 }
 

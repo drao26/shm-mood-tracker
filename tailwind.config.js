@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        chrome: ['"MS Sans Serif"', '"Pixelated MS Sans Serif"', 'Tahoma', 'sans-serif'],
+        chrome: ['"MS Sans Serif"', 'sans-serif'],
       },
     },
   },

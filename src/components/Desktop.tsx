@@ -21,16 +21,11 @@ interface IconDef {
 }
 
 const icons: IconDef[] = [
-  // TODO: replace placeholder, expects 48x48 PNG
-  { id: 'today', label: 'today', iconSrc: '/icons/today.png', tone: 'mint', title: "today's check-in" },
-  // TODO: replace placeholder, expects 48x48 PNG
-  { id: 'april', label: 'april', iconSrc: '/icons/april.png', tone: 'lavender', title: "april's profile" },
-  // TODO: replace placeholder, expects 48x48 PNG
-  { id: 'angie', label: 'angie', iconSrc: '/icons/angie.png', tone: 'lavender', title: "angie's profile" },
-  // TODO: replace placeholder, expects 48x48 PNG
-  { id: 'deepthi', label: 'deepthi', iconSrc: '/icons/deepthi.png', tone: 'lavender', title: "deepthi's profile" },
-  // TODO: replace placeholder, expects 48x48 PNG
-  { id: 'moodmap', label: 'mood map', iconSrc: '/icons/moodmap.png', tone: 'peach', title: 'swedish house mafia mood map' },
+  { id: 'today', label: 'today', iconSrc: '/images/mail.png', tone: 'mint', title: "today's check-in" },
+  { id: 'april', label: 'april', iconSrc: '/images/piq_58417_400x400.png', tone: 'lavender', title: "april's profile" },
+  { id: 'angie', label: 'angie', iconSrc: '/images/sun.png', tone: 'lavender', title: "angie's profile" },
+  { id: 'deepthi', label: 'deepthi', iconSrc: '/images/807b5c4b02e765bb4930b7c66662ef4b.gif', tone: 'lavender', title: "deepthi's profile" },
+  { id: 'moodmap', label: 'mood map', iconSrc: '/images/mail.png', tone: 'peach', title: 'swedish house mafia mood map' },
 ];
 
 function WindowContent({ id }: { id: string; userName: string | null }) {
