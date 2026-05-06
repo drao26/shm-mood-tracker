@@ -23,11 +23,11 @@ interface IconDef {
 const base = import.meta.env.BASE_URL;
 
 const icons: IconDef[] = [
-  { id: 'today', label: 'today', iconSrc: `${base}images/mail.png`, tone: 'mint', title: "today's check-in" },
-  { id: 'april', label: 'april', iconSrc: `${base}images/piq_58417_400x400.png`, tone: 'lavender', title: "april's profile" },
-  { id: 'angie', label: 'angie', iconSrc: `${base}images/sun.png`, tone: 'lavender', title: "angie's profile" },
-  { id: 'deepthi', label: 'deepthi', iconSrc: `${base}images/807b5c4b02e765bb4930b7c66662ef4b.gif`, tone: 'lavender', title: "deepthi's profile" },
-  { id: 'moodmap', label: 'mood map', iconSrc: `${base}images/mail.png`, tone: 'peach', title: 'swedish house mafia mood map' },
+  { id: 'today', label: 'today', iconSrc: `${base}images/source.gif`, tone: 'mint', title: "today's check-in" },
+  { id: 'april', label: 'april', iconSrc: `${base}images/pompompurin-sanrio.gif`, tone: 'lavender', title: "april's profile" },
+  { id: 'angie', label: 'angie', iconSrc: `${base}images/200.gif`, tone: 'lavender', title: "angie's profile" },
+  { id: 'deepthi', label: 'deepthi', iconSrc: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`, tone: 'lavender', title: "deepthi's profile" },
+  { id: 'moodmap', label: 'mood map', iconSrc: `${base}images/star.gif`, tone: 'peach', title: 'swedish house mafia mood map' },
 ];
 
 function WindowContent({ id }: { id: string; userName: string | null }) {
@@ -153,6 +153,14 @@ export function MobileShell({ onSwitchUser }: DesktopProps) {
     'mood map': 'mood map',
   };
 
+  const iconMap: Record<string, string> = {
+    today: `${base}images/source.gif`,
+    april: `${base}images/pompompurin-sanrio.gif`,
+    angie: `${base}images/200.gif`,
+    deepthi: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`,
+    'mood map': `${base}images/star.gif`,
+  };
+
   function renderContent() {
     switch (active) {
       case 'today': return <Today />;
@@ -172,10 +180,11 @@ export function MobileShell({ onSwitchUser }: DesktopProps) {
           <button
             key={t}
             onClick={() => setActive(t)}
-            className={`px-3 py-[6px] text-[11px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] ${
+            className={`px-3 py-[6px] text-[11px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-1 ${
               active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
             }`}
           >
+            <img src={iconMap[t]} alt="" className="w-[16px] h-[16px] object-contain" />
             {t}
           </button>
         ))}

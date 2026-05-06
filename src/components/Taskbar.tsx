@@ -36,8 +36,7 @@ export default function Taskbar({ windows, activeId, onTaskClick, userName, onSw
           onClick={() => setMenuOpen(!menuOpen)}
           className="font-bold flex items-center gap-1 h-[24px]"
         >
-          {/* TODO: replace placeholder, expects 16x16 start icon PNG */}
-          <div className="w-[14px] h-[14px] border border-dashed border-[var(--chrome-dark)]" />
+          <img src={`${import.meta.env.BASE_URL}images/pixel-heart-love-valentine-romance-romantic-wedding-game-interface-icon-symbol-cursor-arrow-sign-png.webp`} alt="" className="w-[14px] h-[14px] object-contain" />
           start
         </Button95>
         {menuOpen && (
