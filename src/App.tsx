@@ -13,7 +13,7 @@ function useIsMobile() {
   return mobile;
 }
 
-function useDailyTheme() {
+function useSessionTheme() {
   useEffect(() => {
     const { bg, accent, accentLight } = getDailyPalette();
     const root = document.documentElement;
@@ -23,20 +23,32 @@ function useDailyTheme() {
   }, []);
 }
 
+function getStoredUser(): string | null {
+  const storedDate = localStorage.getItem('shm-user-date');
+  const today = new Date().toISOString().slice(0, 10);
+  if (storedDate !== today) {
+    localStorage.removeItem('shm-user');
+    localStorage.removeItem('shm-user-date');
+    return null;
+  }
+  return localStorage.getItem('shm-user');
+}
+
 export default function App() {
-  useDailyTheme();
-  const [userName, setUserName] = useState<string | null>(
-    localStorage.getItem('shm-user')
-  );
+  useSessionTheme();
+  const [userName, setUserName] = useState<string | null>(getStoredUser);
   const isMobile = useIsMobile();
 
   function handlePick(name: string) {
+    const today = new Date().toISOString().slice(0, 10);
     localStorage.setItem('shm-user', name);
+    localStorage.setItem('shm-user-date', today);
     setUserName(name);
   }
 
   function handleSwitchUser() {
     localStorage.removeItem('shm-user');
+    localStorage.removeItem('shm-user-date');
     setUserName(null);
   }
 

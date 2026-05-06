@@ -30,8 +30,16 @@ const icons: IconDef[] = [
   { id: 'moodmap', label: 'mood map', iconSrc: `${base}images/star.gif`, tone: 'peach', title: 'swedish house mafia mood map' },
 ];
 
-function WindowContent({ id }: { id: string; userName: string | null }) {
+function WindowContent({ id, userName }: { id: string; userName: string | null }) {
   switch (id) {
+    case 'welcome':
+      return (
+        <div className="flex flex-col items-center justify-center gap-3 py-8">
+          <img src={`${base}images/sun.png`} alt="" className="w-12 h-12" />
+          <p className="text-[13px] text-[var(--text)] font-bold">hi {userName}!</p>
+          <p className="text-[11px] text-[var(--text)]">ready to check in today?</p>
+        </div>
+      );
     case 'today':
       return <Today />;
     case 'april':
@@ -58,10 +66,15 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   const desktop = useDesktop();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
 
-  // Auto-open today's check-in on first load
+  // Show welcome window first, then auto-open today after 2s
   useEffect(() => {
-    const todayIcon = icons.find((i) => i.id === 'today')!;
-    desktop.open('today', todayIcon.title, todayIcon.tone, todayIcon.iconSrc);
+    desktop.open('welcome', `welcome, ${userName}`, 'pink', `${base}images/sun.png`);
+    const timer = setTimeout(() => {
+      desktop.close('welcome');
+      const todayIcon = icons.find((i) => i.id === 'today')!;
+      desktop.open('today', todayIcon.title, todayIcon.tone, todayIcon.iconSrc);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleIconOpen(icon: IconDef) {
@@ -208,24 +221,24 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
           <button
             key={t}
             onClick={() => setActive(t)}
-            className={`px-3 py-[6px] text-[11px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-1 ${
+            className={`px-2 py-1 text-[10px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[3px] ${
               active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
             }`}
           >
-            <img src={iconMap[t]} alt="" className="w-[16px] h-[16px] object-contain" />
+            <img src={iconMap[t]} alt="" className="w-[14px] h-[14px] object-contain" />
             {t}
           </button>
         ))}
         <button
           onClick={onSwitchUser}
-          className="px-3 py-[6px] text-[11px] whitespace-nowrap text-[var(--text)] ml-auto"
+          className="px-2 py-1 text-[10px] whitespace-nowrap text-[var(--text)] ml-auto"
         >
           switch
         </button>
       </div>
       {/* window */}
       <div className="flex-1 overflow-auto p-2">
-        <Window title={titleMap[active]} tone={toneMap[active]} onClose={goToToday}>
+        <Window title={titleMap[active]} tone={toneMap[active]} icon={iconMap[active]} onClose={goToToday}>
           {renderContent()}
         </Window>
       </div>

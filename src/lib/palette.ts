@@ -69,10 +69,8 @@ function darkenHex(hex: string, factor: number): string {
 }
 
 export function getDailyPalette() {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
-  );
-  const bg = dailyBackgrounds[dayOfYear % dailyBackgrounds.length];
+  const idx = Math.floor(Math.random() * dailyBackgrounds.length);
+  const bg = dailyBackgrounds[idx];
   const accent = darkenHex(bg, 0.72);
   const accentLight = darkenHex(bg, 0.85);
   return { bg, accent, accentLight };

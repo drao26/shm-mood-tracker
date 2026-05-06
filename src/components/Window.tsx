@@ -95,18 +95,24 @@ export default function Window({
       const dy = e.clientY - resizeStart.current.my;
       const { edge, w, h, x } = resizeStart.current;
 
+      let newW = w;
+      let newH = h;
+
       if (edge === 'e' || edge === 'se') {
-        setSize({ w: Math.max(200, w + dx), h: edge === 'se' ? Math.max(100, h + dy) : (size?.h ?? h) });
+        newW = Math.max(200, w + dx);
+        if (edge === 'se') newH = Math.max(100, h + dy);
       } else if (edge === 'w' || edge === 'sw') {
-        const nw = Math.max(200, w - dx);
-        const nx = x + (w - nw);
-        setSize({ w: nw, h: edge === 'sw' ? Math.max(100, h + dy) : (size?.h ?? h) });
+        newW = Math.max(200, w - dx);
+        const nx = x + (w - newW);
         setPos((prev) => ({ x: nx, y: prev?.y ?? 0 }));
+        if (edge === 'sw') newH = Math.max(100, h + dy);
       } else if (edge === 's') {
-        setSize({ w: size?.w ?? w, h: Math.max(100, h + dy) });
+        newH = Math.max(100, h + dy);
       }
+
+      setSize({ w: newW, h: newH });
     },
-    [size]
+    []
   );
 
   const handleResizePointerUp = useCallback(() => {
@@ -125,7 +131,7 @@ export default function Window({
     <div
       ref={windowRef}
       className={`relative bg-[var(--chrome)] border-2 border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-darker)] border-r-[var(--chrome-darker)] shadow-md flex flex-col ${maximised ? 'fixed inset-0 z-50' : ''}`}
-      style={{ ...positionStyle, ...sizeStyle, ...style }}
+      style={{ ...style, ...positionStyle, ...sizeStyle }}
       onMouseDown={() => onFocus?.()}
     >
       {/* title bar */}
