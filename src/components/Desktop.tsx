@@ -23,7 +23,7 @@ interface IconDef {
 const base = import.meta.env.BASE_URL;
 
 const icons: IconDef[] = [
-  { id: 'today', label: 'today', iconSrc: `${base}images/pngtree-retro-8-bit-fish-icon-with-transparent-background-vector-png-image_21016047.png`, tone: 'mint', title: "today's check-in" },
+  { id: 'today', label: 'today', iconSrc: `${base}images/mail.png`, tone: 'mint', title: "today's check-in" },
   { id: 'april', label: 'april', iconSrc: `${base}images/pompompurin-sanrio.gif`, tone: 'lavender', title: "april's profile" },
   { id: 'angie', label: 'angie', iconSrc: `${base}images/200.gif`, tone: 'lavender', title: "angie's profile" },
   { id: 'deepthi', label: 'deepthi', iconSrc: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`, tone: 'lavender', title: "deepthi's profile" },
@@ -169,7 +169,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
 
   const iconMap: Record<string, string> = {
     home: `${base}images/sun.png`,
-    today: `${base}images/pngtree-retro-8-bit-fish-icon-with-transparent-background-vector-png-image_21016047.png`,
+    today: `${base}images/mail.png`,
     april: `${base}images/pompompurin-sanrio.gif`,
     angie: `${base}images/200.gif`,
     deepthi: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`,
