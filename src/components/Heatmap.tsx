@@ -20,13 +20,17 @@ export default function Heatmap({ entries, label }: HeatmapProps) {
       scoreMap.set(e.date, e.score);
     }
 
-    // rolling 12 months ending today
+    // 12 months starting from the beginning of the current month
     const today = new Date();
-    const start = new Date(today);
-    start.setFullYear(start.getFullYear() - 1);
+    const start = new Date(today.getFullYear(), today.getMonth(), 1);
     // go back to the previous monday
     while (start.getDay() !== 1) {
       start.setDate(start.getDate() - 1);
+    }
+    const end = new Date(today.getFullYear(), today.getMonth() + 12, 0);
+    // go forward to the next sunday
+    while (end.getDay() !== 0) {
+      end.setDate(end.getDate() + 1);
     }
 
     const weeks: (({ date: string; score: number | null }) | null)[][] = [];
@@ -35,7 +39,7 @@ export default function Heatmap({ entries, label }: HeatmapProps) {
     let lastMonth = -1;
 
     const cursor = new Date(start);
-    while (cursor <= today) {
+    while (cursor <= end) {
       const dayOfWeek = (cursor.getDay() + 6) % 7; // monday = 0
       if (dayOfWeek === 0 && currentWeek.length > 0) {
         weeks.push(currentWeek);
