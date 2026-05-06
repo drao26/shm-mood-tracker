@@ -1,33 +1,31 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Window from '../components/Window';
 import Heatmap from '../components/Heatmap';
 import WordCloud from '../components/WordCloud';
 import { getMoodsForUser, MoodEntry } from '../lib/supabase';
 
-export default function MyHeatmaps() {
-  const navigate = useNavigate();
-  const name = localStorage.getItem('shm-user');
+interface MyHeatmapsProps {
+  overrideName?: string;
+}
+
+export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
+  const name = overrideName ?? localStorage.getItem('shm-user');
   const [moods, setMoods] = useState<MoodEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!name) {
-      navigate('/');
-      return;
-    }
+    if (!name) { setLoading(false); return; }
     getMoodsForUser(name).then((data) => {
       setMoods(data);
       setLoading(false);
     });
-  }, [name, navigate]);
+  }, [name]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-sm text-gray-400">loading...</p>
-      </div>
-    );
+    return <p className="text-[11px] text-[var(--text)]">loading...</p>;
+  }
+
+  if (!name) {
+    return <p className="text-[11px] text-[var(--text)]">please pick a user first</p>;
   }
 
   const heatmapEntries = moods.map((m) => ({ date: m.date, score: m.score }));
@@ -35,18 +33,19 @@ export default function MyHeatmaps() {
   const rantTexts = moods.map((m) => m.rant).filter(Boolean) as string[];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4">
-      <Window title={`${name}'s mood heatmap`} colorIndex={2}>
+    <div className="space-y-3">
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s mood heatmap</p>
         <Heatmap entries={heatmapEntries} />
-      </Window>
-
-      <Window title={`${name}'s gratitude cloud`} colorIndex={3}>
+      </div>
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s gratitude cloud</p>
         <WordCloud texts={gratitudeTexts} />
-      </Window>
-
-      <Window title={`${name}'s rant cloud`} colorIndex={4}>
+      </div>
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s rant cloud</p>
         <WordCloud texts={rantTexts} />
-      </Window>
+      </div>
     </div>
   );
 }

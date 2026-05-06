@@ -4,8 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        pixel: ['"Press Start 2P"', 'cursive'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        chrome: ['"MS Sans Serif"', '"Pixelated MS Sans Serif"', 'Tahoma', 'sans-serif'],
       },
     },
   },

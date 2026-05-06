@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Window from '../components/Window';
 import Heatmap from '../components/Heatmap';
 import WordCloud from '../components/WordCloud';
 import { getAllMoods, MoodEntry } from '../lib/supabase';
@@ -18,14 +17,9 @@ export default function MoodMap() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-sm text-gray-400">loading...</p>
-      </div>
-    );
+    return <p className="text-[11px] text-[var(--text)]">loading...</p>;
   }
 
-  // compute average scores per date
   const dateScores = new Map<string, number[]>();
   for (const m of moods) {
     const arr = dateScores.get(m.date) ?? [];
@@ -37,7 +31,6 @@ export default function MoodMap() {
     score: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
   }));
 
-  // individual entries per user
   const userEntries = (name: string) =>
     moods.filter((m) => m.name === name).map((m) => ({ date: m.date, score: m.score }));
 
@@ -45,30 +38,30 @@ export default function MoodMap() {
   const allRants = moods.map((m) => m.rant).filter(Boolean) as string[];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4">
-      <h1 className="font-pixel text-sm text-center text-gray-700">
-        swedish house mafia mood map
-      </h1>
+    <div className="space-y-3">
+      <p className="text-[11px] font-bold text-[var(--text)]">swedish house mafia mood map</p>
 
-      {/* individual heatmaps */}
-      {names.map((name, i) => (
-        <Window key={name} title={`${name}'s moods`} colorIndex={i}>
+      {names.map((name) => (
+        <div key={name}>
+          <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s moods</p>
           <Heatmap entries={userEntries(name)} />
-        </Window>
+        </div>
       ))}
 
-      {/* combined */}
-      <Window title="us" colorIndex={3}>
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">us (average)</p>
         <Heatmap entries={combinedEntries} label="average of everyone's scores" />
-      </Window>
+      </div>
 
-      <Window title="our gratitude cloud" colorIndex={4}>
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">our gratitude cloud</p>
         <WordCloud texts={allGratitude} />
-      </Window>
+      </div>
 
-      <Window title="our rant cloud" colorIndex={5}>
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">our rant cloud</p>
         <WordCloud texts={allRants} />
-      </Window>
+      </div>
     </div>
   );
 }

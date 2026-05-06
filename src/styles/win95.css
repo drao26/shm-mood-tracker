@@ -1,0 +1,24 @@
+/* Win95 Chrome Palette */
+:root {
+  --chrome:        #eeebf5;
+  --chrome-dark:   #b8b4c2;
+  --chrome-darker: #6e6a7a;
+  --chrome-light:  #ffffff;
+  --desktop-bg:    #c8e6d0;
+  --title-active:  #a8e0c0;
+  --title-active2: #d8f0e0;
+  --title-inactive:#bdbac4;
+  --text:          #1a1a1a;
+  --text-inverse:  #ffffff;
+  --focus-dot:     #1a1a1a;
+}
+
+/* Chrome font stack */
+* {
+  font-family: "MS Sans Serif", "Pixelated MS Sans Serif", Tahoma, sans-serif;
+}
+
+/* Override for word clouds */
+.wordcloud-text {
+  font-family: Inter, system-ui, sans-serif;
+}
