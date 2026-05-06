@@ -63,3 +63,29 @@ export async function getAllMoods() {
   if (error) throw error;
   return (data as MoodEntry[]) ?? [];
 }
+
+export async function getMoodsForDate(date: string) {
+  const { data, error } = await supabase
+    .from('moods')
+    .select('*')
+    .eq('date', date);
+
+  if (error) throw error;
+  return (data as MoodEntry[]) ?? [];
+}
+
+export async function getMoodsForMonth(year: number, month: number) {
+  const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+  const endDay = new Date(year, month + 1, 0).getDate();
+  const endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(endDay).padStart(2, '0')}`;
+
+  const { data, error } = await supabase
+    .from('moods')
+    .select('*')
+    .gte('date', startDate)
+    .lte('date', endDate)
+    .order('date', { ascending: true });
+
+  if (error) throw error;
+  return (data as MoodEntry[]) ?? [];
+}

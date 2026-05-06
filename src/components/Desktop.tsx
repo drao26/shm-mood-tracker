@@ -6,6 +6,7 @@ import { useDesktop } from '../hooks/useDesktop';
 import Today from '../pages/Today';
 import MyHeatmaps from '../pages/MyHeatmaps';
 import MoodMap from '../pages/MoodMap';
+import Calendar from '../pages/Calendar';
 
 interface DesktopProps {
   userName: string | null;
@@ -24,6 +25,7 @@ const base = import.meta.env.BASE_URL;
 
 const icons: IconDef[] = [
   { id: 'today', label: 'today', iconSrc: `${base}images/mail.png`, tone: 'mint', title: "today's check-in" },
+  { id: 'calendar', label: 'calendar', iconSrc: 'https://cdn.pixabay.com/photo/2023/06/22/09/19/calendar-8081009_960_720.png', tone: 'butter', title: 'mood calendar' },
   { id: 'april', label: 'april', iconSrc: `${base}images/pompompurin-sanrio.gif`, tone: 'lavender', title: "april's profile" },
   { id: 'angie', label: 'angie', iconSrc: `${base}images/200.gif`, tone: 'lavender', title: "angie's profile" },
   { id: 'deepthi', label: 'deepthi', iconSrc: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`, tone: 'lavender', title: "deepthi's profile" },
@@ -42,6 +44,8 @@ function WindowContent({ id, userName }: { id: string; userName: string | null }
       );
     case 'today':
       return <Today />;
+    case 'calendar':
+      return <Calendar />;
     case 'april':
       return <MyHeatmaps overrideName="april" />;
     case 'angie':
@@ -150,7 +154,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
 
 /* Mobile shell — shown below md breakpoint */
 export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
-  const tabs = ['home', 'today', 'april', 'angie', 'deepthi', 'mood map'] as const;
+  const tabs = ['home', 'today', 'calendar', 'april', 'angie', 'deepthi', 'mood map'] as const;
   const [active, setActive] = useState<string>('home');
 
   const goToToday = useCallback(() => setActive('today'), []);
@@ -165,6 +169,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   const toneMap: Record<string, WindowTone> = {
     home: 'pink',
     today: 'mint',
+    calendar: 'butter',
     april: 'lavender',
     angie: 'lavender',
     deepthi: 'lavender',
@@ -174,6 +179,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   const titleMap: Record<string, string> = {
     home: `welcome, ${userName}`,
     today: "today's check-in",
+    calendar: 'mood calendar',
     april: "april's profile",
     angie: "angie's profile",
     deepthi: "deepthi's profile",
@@ -183,6 +189,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   const iconMap: Record<string, string> = {
     home: `${base}images/sun.png`,
     today: `${base}images/mail.png`,
+    calendar: 'https://cdn.pixabay.com/photo/2023/06/22/09/19/calendar-8081009_960_720.png',
     april: `${base}images/pompompurin-sanrio.gif`,
     angie: `${base}images/200.gif`,
     deepthi: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`,
@@ -205,6 +212,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
         </div>
       );
       case 'today': return <Today />;
+      case 'calendar': return <Calendar />;
       case 'april': return <MyHeatmaps overrideName="april" />;
       case 'angie': return <MyHeatmaps overrideName="angie" />;
       case 'deepthi': return <MyHeatmaps overrideName="deepthi" />;
