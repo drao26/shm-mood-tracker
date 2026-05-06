@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import DesktopIcon from './DesktopIcon';
 import Taskbar from './Taskbar';
 import Window, { WindowTone } from './Window';
@@ -23,7 +23,7 @@ interface IconDef {
 const base = import.meta.env.BASE_URL;
 
 const icons: IconDef[] = [
-  { id: 'today', label: 'today', iconSrc: `${base}images/source.gif`, tone: 'mint', title: "today's check-in" },
+  { id: 'today', label: 'today', iconSrc: `${base}images/pngtree-retro-8-bit-fish-icon-with-transparent-background-vector-png-image_21016047.png`, tone: 'mint', title: "today's check-in" },
   { id: 'april', label: 'april', iconSrc: `${base}images/pompompurin-sanrio.gif`, tone: 'lavender', title: "april's profile" },
   { id: 'angie', label: 'angie', iconSrc: `${base}images/200.gif`, tone: 'lavender', title: "angie's profile" },
   { id: 'deepthi', label: 'deepthi', iconSrc: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`, tone: 'lavender', title: "deepthi's profile" },
@@ -60,11 +60,12 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
 
   // Auto-open today's check-in on first load
   useEffect(() => {
-    desktop.open('today', "today's check-in", 'mint');
+    const todayIcon = icons.find((i) => i.id === 'today')!;
+    desktop.open('today', todayIcon.title, todayIcon.tone, todayIcon.iconSrc);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleIconOpen(icon: IconDef) {
-    desktop.open(icon.id, icon.title, icon.tone);
+    desktop.open(icon.id, icon.title, icon.tone, icon.iconSrc);
   }
 
   return (
@@ -98,6 +99,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
               id={w.id}
               title={w.title}
               tone={w.tone}
+              icon={w.iconSrc}
               active={w.id === desktop.activeId}
               maximised={w.maximised}
               draggable
@@ -134,11 +136,21 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
 }
 
 /* Mobile shell — shown below md breakpoint */
-export function MobileShell({ onSwitchUser }: DesktopProps) {
-  const tabs = ['today', 'april', 'angie', 'deepthi', 'mood map'] as const;
-  const [active, setActive] = useState<string>('today');
+export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
+  const tabs = ['home', 'today', 'april', 'angie', 'deepthi', 'mood map'] as const;
+  const [active, setActive] = useState<string>('home');
+
+  const goToToday = useCallback(() => setActive('today'), []);
+
+  // Auto-navigate from landing page to today
+  useEffect(() => {
+    if (active !== 'home') return;
+    const timer = setTimeout(goToToday, 2000);
+    return () => clearTimeout(timer);
+  }, [active, goToToday]);
 
   const toneMap: Record<string, WindowTone> = {
+    home: 'pink',
     today: 'mint',
     april: 'lavender',
     angie: 'lavender',
@@ -147,6 +159,7 @@ export function MobileShell({ onSwitchUser }: DesktopProps) {
   };
 
   const titleMap: Record<string, string> = {
+    home: `welcome, ${userName}`,
     today: "today's check-in",
     april: "april's profile",
     angie: "angie's profile",
@@ -155,7 +168,8 @@ export function MobileShell({ onSwitchUser }: DesktopProps) {
   };
 
   const iconMap: Record<string, string> = {
-    today: `${base}images/source.gif`,
+    home: `${base}images/sun.png`,
+    today: `${base}images/pngtree-retro-8-bit-fish-icon-with-transparent-background-vector-png-image_21016047.png`,
     april: `${base}images/pompompurin-sanrio.gif`,
     angie: `${base}images/200.gif`,
     deepthi: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`,
@@ -164,6 +178,19 @@ export function MobileShell({ onSwitchUser }: DesktopProps) {
 
   function renderContent() {
     switch (active) {
+      case 'home': return (
+        <div className="flex flex-col items-center justify-center gap-3 py-8">
+          <img src={`${base}images/sun.png`} alt="" className="w-12 h-12" />
+          <p className="text-[13px] text-[var(--text)] font-bold">hi {userName}!</p>
+          <p className="text-[11px] text-[var(--text)]">ready to check in today?</p>
+          <button
+            onClick={goToToday}
+            className="mt-2 px-4 py-1 text-[11px] bg-[var(--chrome)] border-2 border-[var(--chrome-dark)] active:border-inset"
+          >
+            let's go
+          </button>
+        </div>
+      );
       case 'today': return <Today />;
       case 'april': return <MyHeatmaps overrideName="april" />;
       case 'angie': return <MyHeatmaps overrideName="angie" />;
@@ -198,7 +225,7 @@ export function MobileShell({ onSwitchUser }: DesktopProps) {
       </div>
       {/* window */}
       <div className="flex-1 overflow-auto p-2">
-        <Window title={titleMap[active]} tone={toneMap[active]} onClose={() => setActive('today')}>
+        <Window title={titleMap[active]} tone={toneMap[active]} onClose={goToToday}>
           {renderContent()}
         </Window>
       </div>

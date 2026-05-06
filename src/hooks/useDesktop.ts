@@ -5,6 +5,7 @@ export interface DesktopWindow {
   id: string;
   title: string;
   tone: WindowTone;
+  iconSrc?: string;
   minimised: boolean;
   maximised: boolean;
 }
@@ -16,14 +17,14 @@ export function useDesktop() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [order, setOrder] = useState<string[]>([]); // z-order, last = top
 
-  const open = useCallback((id: string, title: string, tone: WindowTone = 'mint') => {
+  const open = useCallback((id: string, title: string, tone: WindowTone = 'mint', iconSrc?: string) => {
     setWindows((prev) => {
       const existing = prev.find((w) => w.id === id);
       if (existing) {
         // already open — just restore and focus
         return prev.map((w) => (w.id === id ? { ...w, minimised: false } : w));
       }
-      return [...prev, { id, title, tone, minimised: false, maximised: false }];
+      return [...prev, { id, title, tone, iconSrc, minimised: false, maximised: false }];
     });
     setActiveId(id);
     setOrder((prev) => [...prev.filter((x) => x !== id), id]);

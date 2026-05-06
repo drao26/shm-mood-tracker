@@ -77,7 +77,7 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
           <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s gratitudes</p>
           <ul className="space-y-1">
             {gratitudeTexts.map((text, i) => (
-              <li key={i} className="text-[11px] text-[var(--text)]">"{text}"</li>
+              <li key={i} className="text-[11px] text-[var(--text)] whitespace-pre-wrap">"{text}"</li>
             ))}
           </ul>
         </div>
@@ -87,7 +87,7 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
           <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s rants</p>
           <ul className="space-y-1">
             {rantTexts.map((text, i) => (
-              <li key={i} className="text-[11px] text-[var(--text)]">"{text}"</li>
+              <li key={i} className="text-[11px] text-[var(--text)] whitespace-pre-wrap">"{text}"</li>
             ))}
           </ul>
         </div>

@@ -2,6 +2,8 @@ import React, { useRef, useState, useCallback } from 'react';
 
 export type WindowTone = 'mint' | 'lavender' | 'peach' | 'butter' | 'pink';
 
+type ResizeEdge = 'e' | 'w' | 's' | 'se' | 'sw';
+
 interface WindowProps {
   id?: string;
   title: string;
@@ -41,7 +43,7 @@ export default function Window({
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const dragStart = useRef<{ mx: number; my: number; x: number; y: number } | null>(null);
-  const resizeStart = useRef<{ mx: number; my: number; w: number; h: number } | null>(null);
+  const resizeStart = useRef<{ mx: number; my: number; w: number; h: number; x: number; edge: ResizeEdge } | null>(null);
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -73,14 +75,14 @@ export default function Window({
   }, []);
 
   const handleResizePointerDown = useCallback(
-    (e: React.PointerEvent) => {
+    (e: React.PointerEvent, edge: ResizeEdge) => {
       if (!resizable || maximised) return;
       e.stopPropagation();
       onFocus?.();
       const el = windowRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      resizeStart.current = { mx: e.clientX, my: e.clientY, w: rect.width, h: rect.height };
+      resizeStart.current = { mx: e.clientX, my: e.clientY, w: rect.width, h: rect.height, x: rect.left, edge };
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
     [resizable, maximised, onFocus]
@@ -91,11 +93,20 @@ export default function Window({
       if (!resizeStart.current) return;
       const dx = e.clientX - resizeStart.current.mx;
       const dy = e.clientY - resizeStart.current.my;
-      const nw = Math.max(200, resizeStart.current.w + dx);
-      const nh = Math.max(100, resizeStart.current.h + dy);
-      setSize({ w: nw, h: nh });
+      const { edge, w, h, x } = resizeStart.current;
+
+      if (edge === 'e' || edge === 'se') {
+        setSize({ w: Math.max(200, w + dx), h: edge === 'se' ? Math.max(100, h + dy) : (size?.h ?? h) });
+      } else if (edge === 'w' || edge === 'sw') {
+        const nw = Math.max(200, w - dx);
+        const nx = x + (w - nw);
+        setSize({ w: nw, h: edge === 'sw' ? Math.max(100, h + dy) : (size?.h ?? h) });
+        setPos((prev) => ({ x: nx, y: prev?.y ?? 0 }));
+      } else if (edge === 's') {
+        setSize({ w: size?.w ?? w, h: Math.max(100, h + dy) });
+      }
     },
-    []
+    [size]
   );
 
   const handleResizePointerUp = useCallback(() => {
@@ -162,20 +173,51 @@ export default function Window({
       <div className="border-2 border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] m-[2px] p-2 bg-white flex-1 overflow-auto text-[12px]">
         {children}
       </div>
-      {/* resize grip */}
+      {/* resize edges */}
       {resizable && !maximised && (
-        <div
-          className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"
-          onPointerDown={handleResizePointerDown}
-          onPointerMove={handleResizePointerMove}
-          onPointerUp={handleResizePointerUp}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" className="text-[var(--chrome-dark)]">
-            <line x1="14" y1="6" x2="6" y2="14" stroke="currentColor" strokeWidth="1" />
-            <line x1="14" y1="9" x2="9" y2="14" stroke="currentColor" strokeWidth="1" />
-            <line x1="14" y1="12" x2="12" y2="14" stroke="currentColor" strokeWidth="1" />
-          </svg>
-        </div>
+        <>
+          {/* right edge */}
+          <div
+            className="absolute top-0 right-0 w-[5px] h-full cursor-ew-resize"
+            onPointerDown={(e) => handleResizePointerDown(e, 'e')}
+            onPointerMove={handleResizePointerMove}
+            onPointerUp={handleResizePointerUp}
+          />
+          {/* left edge */}
+          <div
+            className="absolute top-0 left-0 w-[5px] h-full cursor-ew-resize"
+            onPointerDown={(e) => handleResizePointerDown(e, 'w')}
+            onPointerMove={handleResizePointerMove}
+            onPointerUp={handleResizePointerUp}
+          />
+          {/* bottom edge */}
+          <div
+            className="absolute bottom-0 left-0 h-[5px] w-full cursor-ns-resize"
+            onPointerDown={(e) => handleResizePointerDown(e, 's')}
+            onPointerMove={handleResizePointerMove}
+            onPointerUp={handleResizePointerUp}
+          />
+          {/* bottom-right corner */}
+          <div
+            className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"
+            onPointerDown={(e) => handleResizePointerDown(e, 'se')}
+            onPointerMove={handleResizePointerMove}
+            onPointerUp={handleResizePointerUp}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" className="text-[var(--chrome-dark)]">
+              <line x1="14" y1="6" x2="6" y2="14" stroke="currentColor" strokeWidth="1" />
+              <line x1="14" y1="9" x2="9" y2="14" stroke="currentColor" strokeWidth="1" />
+              <line x1="14" y1="12" x2="12" y2="14" stroke="currentColor" strokeWidth="1" />
+            </svg>
+          </div>
+          {/* bottom-left corner */}
+          <div
+            className="absolute bottom-0 left-0 w-4 h-4 cursor-nesw-resize"
+            onPointerDown={(e) => handleResizePointerDown(e, 'sw')}
+            onPointerMove={handleResizePointerMove}
+            onPointerUp={handleResizePointerUp}
+          />
+        </>
       )}
     </div>
   );
