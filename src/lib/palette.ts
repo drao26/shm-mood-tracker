@@ -1,0 +1,52 @@
+// pastel rainbow scale for mood scores 0–10 (cool → warm)
+export const moodScale: string[] = [
+  '#B8CCE0', // 0 - soft steel blue
+  '#A8D8EA', // 1 - baby blue
+  '#B8E8D0', // 2 - soft mint
+  '#C8E6C0', // 3 - soft green
+  '#D8E8B0', // 4 - soft lime
+  '#F0F0B8', // 5 - soft yellow
+  '#F5E0A0', // 6 - butter
+  '#F5D0A0', // 7 - peach
+  '#F5C0A0', // 8 - soft orange
+  '#F5B0B0', // 9 - soft coral
+  '#F5A0C0', // 10 - soft rose
+];
+
+// empty day color
+export const emptyColor = '#EDEDEB';
+
+// window title bar colors (rotate through these)
+export const titleBarColors: string[] = [
+  '#D8C8F0', // lavender
+  '#B8E8D0', // mint
+  '#FFF5B8', // butter yellow
+  '#FFD8C0', // peach
+  '#FFD0E0', // soft pink
+  '#B8D8F0', // baby blue
+];
+
+// pastel accents for word cloud text (no near-white)
+export const wordCloudColors: string[] = [
+  '#9B7FC4', // deeper lavender
+  '#5BAD8A', // deeper mint
+  '#C4A635', // deeper butter
+  '#D4845A', // deeper peach
+  '#D46A8A', // deeper pink
+  '#5A9AC4', // deeper blue
+  '#7BAD5B', // deeper green
+  '#C47F5A', // deeper orange
+];
+
+export function getMoodColor(score: number): string {
+  const clamped = Math.max(0, Math.min(10, Math.round(score)));
+  return moodScale[clamped];
+}
+
+export function getTitleBarColor(index: number): string {
+  return titleBarColors[index % titleBarColors.length];
+}
+
+export function getSliderGradient(): string {
+  return `linear-gradient(to right, ${moodScale.join(', ')})`;
+}

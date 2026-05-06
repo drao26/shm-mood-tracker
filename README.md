@@ -1,0 +1,48 @@
+# shm moodtracker
+
+a private daily mood check-in app for three friends — april, angie, and deepthi.
+
+track your mood on a 0–10 slider, jot down gratitude or rants, and see it all
+visualised in github-style heatmaps and word clouds. windows 95 aesthetic in
+pastels.
+
+## setup
+
+### 1. supabase
+
+1. create a free supabase project at [supabase.com](https://supabase.com).
+2. go to the sql editor and run `supabase/schema.sql` to create the `moods`
+   table with RLS enabled.
+3. copy your project url and anon key from settings → api.
+
+### 2. local dev
+
+```bash
+cp .env.example .env
+# fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+
+npm install
+npm run dev
+```
+
+### 3. deploy to github pages
+
+1. push this repo to github.
+2. add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as repository secrets
+   (settings → secrets → actions).
+3. enable pages: settings → pages → source = "github actions".
+4. push to `main` — the workflow builds and deploys automatically.
+
+## security note
+
+this app has **no authentication**. rls is set to allow all operations for
+anonymous users. it's designed as a private tool for three friends behind an
+unguessable url. do not use this for anything sensitive.
+
+## stack
+
+- react + vite + typescript
+- tailwind css
+- supabase (postgres + rest api)
+- d3-cloud (word cloud layout)
+- github pages
