@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Desktop, { MobileShell } from './components/Desktop';
 import Home from './pages/Home';
 import { getDailyPalette } from './lib/palette';
+import { getAESTDate } from './lib/dateUtils';
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(window.innerWidth < 768);
@@ -25,7 +26,7 @@ function useSessionTheme() {
 
 function getStoredUser(): string | null {
   const storedDate = localStorage.getItem('shm-user-date');
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getAESTDate();
   if (storedDate !== today) {
     localStorage.removeItem('shm-user');
     localStorage.removeItem('shm-user-date');
@@ -40,9 +41,8 @@ export default function App() {
   const isMobile = useIsMobile();
 
   function handlePick(name: string) {
-    const today = new Date().toISOString().slice(0, 10);
     localStorage.setItem('shm-user', name);
-    localStorage.setItem('shm-user-date', today);
+    localStorage.setItem('shm-user-date', getAESTDate());
     setUserName(name);
   }
 
