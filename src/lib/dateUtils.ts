@@ -21,3 +21,9 @@ export function getAESTDisplayDate(): string {
   const [y, m, d] = iso.split('-');
   return `${d}-${m}-${y}`;
 }
+
+/** Format an ISO date string (YYYY-MM-DD) for display (DD-MM-YYYY). */
+export function formatDisplayDate(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return `${d}-${m}-${y}`;
+}
