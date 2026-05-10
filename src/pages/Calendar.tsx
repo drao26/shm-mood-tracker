@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { getMoodsForMonth, isSupabaseConfigured, MoodEntry, upsertMood } from '../lib/supabase';
 import { getMoodColor, emptyColor, moodScale } from '../lib/palette';
-import { getAESTDate, formatDisplayDate } from '../lib/dateUtils';
+import { getLocalDate, formatDisplayDate } from '../lib/dateUtils';
 import Button95 from '../components/Button95';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
@@ -25,7 +25,7 @@ export default function Calendar() {
   const [entrySaving, setEntrySaving] = useState(false);
 
   const currentUser = localStorage.getItem('shm-user');
-  const todayStr = getAESTDate();
+  const todayStr = getLocalDate();
 
   useEffect(() => {
     let cancelled = false;

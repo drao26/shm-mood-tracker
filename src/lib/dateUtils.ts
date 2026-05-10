@@ -1,9 +1,6 @@
-const AEST_TIMEZONE = 'Australia/Sydney';
-
-/** Return today's date in AEST as an ISO date string (YYYY-MM-DD). */
-export function getAESTDate(): string {
+/** Return today's date in the user's local timezone as an ISO date string (YYYY-MM-DD). */
+export function getLocalDate(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: AEST_TIMEZONE,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -21,7 +18,12 @@ export function formatDisplayDate(iso: string): string {
   return `${d}-${m}-${y}`;
 }
 
-/** Return today's date in AEST formatted for display (DD-MM-YYYY). */
-export function getAESTDisplayDate(): string {
-  return formatDisplayDate(getAESTDate());
+/** Return today's date in the user's local timezone formatted for display (DD-MM-YYYY). */
+export function getLocalDisplayDate(): string {
+  return formatDisplayDate(getLocalDate());
 }
+
+/** @deprecated Use getLocalDate instead */
+export const getAESTDate = getLocalDate;
+/** @deprecated Use getLocalDisplayDate instead */
+export const getAESTDisplayDate = getLocalDisplayDate;

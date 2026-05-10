@@ -4,11 +4,11 @@ import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
-import { getAESTDate, getAESTDisplayDate, formatDisplayDate } from '../lib/dateUtils';
+import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
-  const today = getAESTDate();
+  const today = getLocalDate();
 
   const [selectedDate, setSelectedDate] = useState(today);
   const [score, setScore] = useState(5);
@@ -20,7 +20,7 @@ export default function Today() {
   const [existingEntry, setExistingEntry] = useState(false);
 
   const isToday = selectedDate === today;
-  const displayDate = isToday ? getAESTDisplayDate() : formatDisplayDate(selectedDate);
+  const displayDate = isToday ? getLocalDisplayDate() : formatDisplayDate(selectedDate);
   // Past entries that already exist cannot be overwritten
   const isLocked = !isToday && existingEntry;
 
