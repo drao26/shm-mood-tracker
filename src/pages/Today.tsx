@@ -4,12 +4,12 @@ import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
-import { getAESTDate, getAESTDisplayDate } from '../lib/dateUtils';
+import { getLocalDate, getLocalDisplayDate } from '../lib/dateUtils';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
-  const today = getAESTDate();
-  const todayDisplay = getAESTDisplayDate();
+  const today = getLocalDate();
+  const todayDisplay = getLocalDisplayDate();
 
   const [score, setScore] = useState(5);
   const [gratitude, setGratitude] = useState('');
