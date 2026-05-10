@@ -15,15 +15,13 @@ export function getAESTDate(): string {
   return `${year}-${month}-${day}`;
 }
 
-/** Return today's date in AEST formatted for display (DD-MM-YYYY). */
-export function getAESTDisplayDate(): string {
-  const iso = getAESTDate();
-  const [y, m, d] = iso.split('-');
-  return `${d}-${m}-${y}`;
-}
-
 /** Format an ISO date string (YYYY-MM-DD) for display (DD-MM-YYYY). */
 export function formatDisplayDate(iso: string): string {
   const [y, m, d] = iso.split('-');
   return `${d}-${m}-${y}`;
+}
+
+/** Return today's date in AEST formatted for display (DD-MM-YYYY). */
+export function getAESTDisplayDate(): string {
+  return formatDisplayDate(getAESTDate());
 }
