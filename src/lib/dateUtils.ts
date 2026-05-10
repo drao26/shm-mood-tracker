@@ -12,11 +12,15 @@ export function getLocalDate(): string {
   return `${year}-${month}-${day}`;
 }
 
-/** Return today's date in the user's local timezone formatted for display (DD-MM-YYYY). */
-export function getLocalDisplayDate(): string {
-  const iso = getLocalDate();
+/** Format an ISO date string (YYYY-MM-DD) for display (DD-MM-YYYY). */
+export function formatDisplayDate(iso: string): string {
   const [y, m, d] = iso.split('-');
   return `${d}-${m}-${y}`;
+}
+
+/** Return today's date in the user's local timezone formatted for display (DD-MM-YYYY). */
+export function getLocalDisplayDate(): string {
+  return formatDisplayDate(getLocalDate());
 }
 
 /** @deprecated Use getLocalDate instead */
