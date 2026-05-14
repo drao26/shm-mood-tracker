@@ -31,6 +31,9 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
+    // Fetch the most recent 90 entries (~3 months of daily logs for one user).
+    // 'all-time' refers to the cache period label, not the full history window;
+    // keeping this bounded avoids sending very large payloads to Gemini.
     const { data: entries } = await supabase
       .from('moods')
       .select('date, score, gratitude, rant')
