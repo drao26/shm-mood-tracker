@@ -5,7 +5,7 @@ import { getLocalDate, formatDisplayDate } from '../lib/dateUtils';
 import Button95 from '../components/Button95';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
-import Bsod from '../components/Bsod';
+import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
 
 const USERS = ['deepthi', 'april', 'angie'] as const;
 
@@ -162,7 +162,7 @@ export default function Calendar() {
       // Reload month data
       const data = await getMoodsForMonth(year, month);
       setMoods(data);
-      if (Math.random() < 0.01) {
+      if (Math.random() < BSOD_PROBABILITY) {
         setShowBsod(true);
       } else {
         setAddingEntry(false);

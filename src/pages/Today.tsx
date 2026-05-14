@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
-import Bsod from '../components/Bsod';
+import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
@@ -90,7 +90,7 @@ export default function Today() {
       rant: rant.trim() || null,
     });
     setExistingEntry(true);
-    if (Math.random() < 0.01) {
+    if (Math.random() < BSOD_PROBABILITY) {
       setShowBsod(true);
     } else {
       setSaved(true);

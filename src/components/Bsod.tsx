@@ -5,6 +5,7 @@ interface BsodProps {
 }
 
 const BSOD_DURATION_MS = 2000;
+export const BSOD_PROBABILITY = 0.01;
 
 export default function Bsod({ onDismiss }: BsodProps) {
   useEffect(() => {
