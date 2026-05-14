@@ -5,6 +5,7 @@ import { getLocalDate, formatDisplayDate } from '../lib/dateUtils';
 import Button95 from '../components/Button95';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
+import Bsod from '../components/Bsod';
 
 const USERS = ['deepthi', 'april', 'angie'] as const;
 
@@ -23,6 +24,7 @@ export default function Calendar() {
   const [entryGratitude, setEntryGratitude] = useState('');
   const [entryRant, setEntryRant] = useState('');
   const [entrySaving, setEntrySaving] = useState(false);
+  const [showBsod, setShowBsod] = useState(false);
 
   const currentUser = localStorage.getItem('shm-user');
   const todayStr = getLocalDate();
@@ -148,6 +150,10 @@ export default function Calendar() {
 
   async function handleSaveEntry() {
     if (!currentUser || !selectedDate) return;
+    if (Math.random() < 0.01) {
+      setShowBsod(true);
+      return;
+    }
     setEntrySaving(true);
     try {
       await upsertMood({
@@ -180,46 +186,49 @@ export default function Calendar() {
     const displayDate = formatDisplayDate(selectedDate);
 
     return (
-      <div className="space-y-2">
-        <button onClick={handleBack} className="text-[11px] text-[var(--accent)] hover:underline">← back</button>
-        <p className="text-[12px] font-bold text-[var(--text)]">add entry for {displayDate}</p>
+      <>
+        {showBsod && <Bsod onDismiss={() => setShowBsod(false)} />}
+        <div className="space-y-2">
+          <button onClick={handleBack} className="text-[11px] text-[var(--accent)] hover:underline">← back</button>
+          <p className="text-[12px] font-bold text-[var(--text)]">add entry for {displayDate}</p>
 
-        <div>
-          <label className="block text-[11px] text-[var(--text)] mb-1">how were you feeling?</label>
-          <Trackbar value={entryScore} onChange={setEntryScore} />
-          <div className="flex items-center gap-1 mt-1">
-            <span className="text-[9px] text-gray-400">0</span>
-            {moodScale.map((color, i) => (
-              <div key={i} className="w-[10px] h-[10px] rounded-sm" style={{ backgroundColor: color }} />
-            ))}
-            <span className="text-[9px] text-gray-400">10</span>
+          <div>
+            <label className="block text-[11px] text-[var(--text)] mb-1">how were you feeling?</label>
+            <Trackbar value={entryScore} onChange={setEntryScore} />
+            <div className="flex items-center gap-1 mt-1">
+              <span className="text-[9px] text-gray-400">0</span>
+              {moodScale.map((color, i) => (
+                <div key={i} className="w-[10px] h-[10px] rounded-sm" style={{ backgroundColor: color }} />
+              ))}
+              <span className="text-[9px] text-gray-400">10</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[11px] text-[var(--text)] mb-1">what were you grateful for?</label>
+            <Textarea95
+              value={entryGratitude}
+              onChange={(e) => setEntryGratitude(e.target.value)}
+              placeholder="optional"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] text-[var(--text)] mb-1">anything you want to rant about?</label>
+            <Textarea95
+              value={entryRant}
+              onChange={(e) => setEntryRant(e.target.value)}
+              placeholder="optional"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <Button95 onClick={handleSaveEntry} disabled={entrySaving} className="w-[75px]">
+              {entrySaving ? '...' : 'save'}
+            </Button95>
           </div>
         </div>
-
-        <div>
-          <label className="block text-[11px] text-[var(--text)] mb-1">what were you grateful for?</label>
-          <Textarea95
-            value={entryGratitude}
-            onChange={(e) => setEntryGratitude(e.target.value)}
-            placeholder="optional"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[11px] text-[var(--text)] mb-1">anything you want to rant about?</label>
-          <Textarea95
-            value={entryRant}
-            onChange={(e) => setEntryRant(e.target.value)}
-            placeholder="optional"
-          />
-        </div>
-
-        <div className="flex justify-end">
-          <Button95 onClick={handleSaveEntry} disabled={entrySaving} className="w-[75px]">
-            {entrySaving ? '...' : 'save'}
-          </Button95>
-        </div>
-      </div>
+      </>
     );
   }
 

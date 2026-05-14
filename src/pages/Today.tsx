@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
+import Bsod from '../components/Bsod';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
@@ -18,6 +19,7 @@ export default function Today() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [existingEntry, setExistingEntry] = useState(false);
+  const [showBsod, setShowBsod] = useState(false);
 
   const isToday = selectedDate === today;
   const displayDate = isToday ? getLocalDisplayDate() : formatDisplayDate(selectedDate);
@@ -80,6 +82,10 @@ export default function Today() {
 
   async function handleSave() {
     if (!name || isLocked) return;
+    if (Math.random() < 0.01) {
+      setShowBsod(true);
+      return;
+    }
     await upsertMood({
       name,
       date: selectedDate,
@@ -104,7 +110,9 @@ export default function Today() {
   }
 
   return (
-    <div className="space-y-3">
+    <>
+      {showBsod && <Bsod onDismiss={() => setShowBsod(false)} />}
+      <div className="space-y-3">
       <p className="text-[11px] text-[var(--text)]">
         hey {name} · {displayDate}
       </p>
@@ -181,5 +189,6 @@ export default function Today() {
         )}
       </div>
     </div>
+    </>
   );
 }
