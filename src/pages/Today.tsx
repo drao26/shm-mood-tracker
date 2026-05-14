@@ -6,6 +6,52 @@ import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase'
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
 
+const OFFLINE_SAVE_QUEUE_KEY = 'shm-offline-mood-save-queue';
+type MoodSavePayload = Parameters<typeof upsertMood>[0];
+
+function readOfflineSaveQueue(): MoodSavePayload[] {
+  try {
+    const raw = localStorage.getItem(OFFLINE_SAVE_QUEUE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed as MoodSavePayload[];
+  } catch {
+    return [];
+  }
+}
+
+function writeOfflineSaveQueue(queue: MoodSavePayload[]) {
+  if (queue.length === 0) {
+    localStorage.removeItem(OFFLINE_SAVE_QUEUE_KEY);
+    return;
+  }
+  localStorage.setItem(OFFLINE_SAVE_QUEUE_KEY, JSON.stringify(queue));
+}
+
+function queueOfflineSave(entry: MoodSavePayload) {
+  const queue = readOfflineSaveQueue().filter(
+    (queued) => !(queued.name === entry.name && queued.date === entry.date),
+  );
+  queue.push(entry);
+  writeOfflineSaveQueue(queue);
+}
+
+async function flushOfflineSaveQueue() {
+  const queue = readOfflineSaveQueue();
+  if (queue.length === 0) return;
+
+  const remaining: MoodSavePayload[] = [];
+  for (const entry of queue) {
+    try {
+      await upsertMood(entry);
+    } catch {
+      remaining.push(entry);
+    }
+  }
+  writeOfflineSaveQueue(remaining);
+}
+
 export default function Today() {
   const name = localStorage.getItem('shm-user');
   const today = getLocalDate();
@@ -74,21 +120,46 @@ export default function Today() {
     };
   }, [name, selectedDate]);
 
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
+    const handleOnline = () => {
+      void flushOfflineSaveQueue();
+    };
+
+    if (navigator.onLine) {
+      void flushOfflineSaveQueue();
+    }
+
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
+
   function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSelectedDate(e.target.value);
   }
 
   async function handleSave() {
     if (!name || isLocked) return;
-    await upsertMood({
+    const entry: MoodSavePayload = {
       name,
       date: selectedDate,
       score,
       gratitude: gratitude.trim() || null,
       rant: rant.trim() || null,
-    });
+    };
+
     setSaved(true);
     setExistingEntry(true);
+    setError(null);
+
+    try {
+      await upsertMood(entry);
+    } catch {
+      queueOfflineSave(entry);
+    }
   }
 
   if (loading) {
