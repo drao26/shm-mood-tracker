@@ -55,11 +55,17 @@ export function useDesktop() {
   );
 
   useEffect(() => {
-    window.localStorage.setItem(ICON_POSITIONS_KEY, JSON.stringify(iconPositions));
+    const timeout = window.setTimeout(() => {
+      window.localStorage.setItem(ICON_POSITIONS_KEY, JSON.stringify(iconPositions));
+    }, 150);
+    return () => window.clearTimeout(timeout);
   }, [iconPositions]);
 
   useEffect(() => {
-    window.localStorage.setItem(WINDOW_POSITIONS_KEY, JSON.stringify(windowPositions));
+    const timeout = window.setTimeout(() => {
+      window.localStorage.setItem(WINDOW_POSITIONS_KEY, JSON.stringify(windowPositions));
+    }, 150);
+    return () => window.clearTimeout(timeout);
   }, [windowPositions]);
 
   const open = useCallback((id: string, title: string, tone: WindowTone = 'mint', iconSrc?: string) => {
