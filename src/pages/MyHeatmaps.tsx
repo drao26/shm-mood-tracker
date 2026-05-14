@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import Heatmap from '../components/Heatmap';
+import ThemeChips from '../components/ThemeChips';
+import TopMoments from '../components/TopMoments';
 import { getMoodsForUser, isSupabaseConfigured, MoodEntry } from '../lib/supabase';
+import { extractThemes } from '../lib/themes';
 
 interface MyHeatmapsProps {
   overrideName?: string;
@@ -63,8 +66,6 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
   }
 
   const heatmapEntries = moods.map((m) => ({ date: m.date, score: m.score }));
-  const gratitudeTexts = moods.map((m) => m.gratitude).filter(Boolean) as string[];
-  const rantTexts = moods.map((m) => m.rant).filter(Boolean) as string[];
 
   return (
     <div className="space-y-3">
@@ -72,24 +73,14 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
         <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s mood heatmap</p>
         <Heatmap entries={heatmapEntries} />
       </div>
-      {gratitudeTexts.length > 0 && (
+      <div>
+        <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s themes</p>
+        <ThemeChips themes={extractThemes(moods)} />
+      </div>
+      {moods.length >= 2 && (
         <div>
-          <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s gratitudes</p>
-          <ul className="space-y-1">
-            {gratitudeTexts.map((text, i) => (
-              <li key={i} className="text-[11px] text-[var(--text)] whitespace-pre-wrap">"{text}"</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {rantTexts.length > 0 && (
-        <div>
-          <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s rants</p>
-          <ul className="space-y-1">
-            {rantTexts.map((text, i) => (
-              <li key={i} className="text-[11px] text-[var(--text)] whitespace-pre-wrap">"{text}"</li>
-            ))}
-          </ul>
+          <p className="text-[11px] font-bold text-[var(--text)] mb-1">{name}'s top moments</p>
+          <TopMoments entries={moods} />
         </div>
       )}
     </div>
