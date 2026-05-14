@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { getMoodsForMonth, isSupabaseConfigured, MoodEntry, upsertMood } from '../lib/supabase';
 import { getMoodColor, emptyColor, moodScale } from '../lib/palette';
 import { getLocalDate, formatDisplayDate } from '../lib/dateUtils';
@@ -150,10 +150,6 @@ export default function Calendar() {
 
   async function handleSaveEntry() {
     if (!currentUser || !selectedDate) return;
-    if (Math.random() < 0.01) {
-      setShowBsod(true);
-      return;
-    }
     setEntrySaving(true);
     try {
       await upsertMood({
@@ -166,13 +162,22 @@ export default function Calendar() {
       // Reload month data
       const data = await getMoodsForMonth(year, month);
       setMoods(data);
-      setAddingEntry(false);
+      if (Math.random() < 0.01) {
+        setShowBsod(true);
+      } else {
+        setAddingEntry(false);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'failed to save entry');
     } finally {
       setEntrySaving(false);
     }
   }
+
+  const handleBsodDismiss = useCallback(() => {
+    setShowBsod(false);
+    setAddingEntry(false);
+  }, []);
 
   function handleBack() {
     if (addingEntry) { setAddingEntry(false); }
@@ -187,7 +192,7 @@ export default function Calendar() {
 
     return (
       <>
-        {showBsod && <Bsod onDismiss={() => setShowBsod(false)} />}
+        {showBsod && <Bsod onDismiss={handleBsodDismiss} />}
         <div className="space-y-2">
           <button onClick={handleBack} className="text-[11px] text-[var(--accent)] hover:underline">← back</button>
           <p className="text-[12px] font-bold text-[var(--text)]">add entry for {displayDate}</p>

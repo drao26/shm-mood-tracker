@@ -33,7 +33,7 @@ export default function Bsod({ onDismiss }: BsodProps) {
           Windows
         </p>
         <p style={{ marginBottom: '24px' }}>
-          A fatal exception 0E has occurred at 0028:C00E3AB7 in VXD VMM(01) +<br />
+          A fatal exception 0E has occurred at 0028:C00E3AB7 in VXD VMM(01) +
           00010E36. The current application will be terminated.
         </p>
         <p style={{ marginBottom: '8px' }}>

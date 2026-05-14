@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
@@ -82,10 +82,6 @@ export default function Today() {
 
   async function handleSave() {
     if (!name || isLocked) return;
-    if (Math.random() < 0.01) {
-      setShowBsod(true);
-      return;
-    }
     await upsertMood({
       name,
       date: selectedDate,
@@ -93,9 +89,18 @@ export default function Today() {
       gratitude: gratitude.trim() || null,
       rant: rant.trim() || null,
     });
-    setSaved(true);
     setExistingEntry(true);
+    if (Math.random() < 0.01) {
+      setShowBsod(true);
+    } else {
+      setSaved(true);
+    }
   }
+
+  const handleBsodDismiss = useCallback(() => {
+    setShowBsod(false);
+    setSaved(true);
+  }, []);
 
   if (loading) {
     return <p className="text-[11px] text-[var(--text)]">loading...</p>;
@@ -111,7 +116,7 @@ export default function Today() {
 
   return (
     <>
-      {showBsod && <Bsod onDismiss={() => setShowBsod(false)} />}
+      {showBsod && <Bsod onDismiss={handleBsodDismiss} />}
       <div className="space-y-3">
       <p className="text-[11px] text-[var(--text)]">
         hey {name} · {displayDate}
