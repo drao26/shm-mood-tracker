@@ -2,6 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { getMoodPreview, MOOD_PREVIEW_EVENT, MOOD_PREVIEW_KEY } from '../lib/moodSignal';
 
 type MascotMode = 'idle' | 'neutral' | 'storm' | 'sunny';
+const REACTION_DURATION_MS = 900;
+const MOOD_BUBBLE_DURATION_MS = 4600;
+const IDLE_BUBBLE_DURATION_MS = 3800;
+const IDLE_BUBBLE_DELAY_MS = 6000;
+const IDLE_BUBBLE_RANDOM_RANGE_MS = 5000;
 
 const commentaryByMode: Record<MascotMode, string[]> = {
   idle: [
@@ -92,8 +97,8 @@ export default function MoodMascot() {
     setLine((current) => pickLine(commentaryByMode[mode], current));
     setBubbleVisible(true);
 
-    const reactTimer = window.setTimeout(() => setReacting(false), 900);
-    const hideTimer = window.setTimeout(() => setBubbleVisible(false), 4600);
+    const reactTimer = window.setTimeout(() => setReacting(false), REACTION_DURATION_MS);
+    const hideTimer = window.setTimeout(() => setBubbleVisible(false), MOOD_BUBBLE_DURATION_MS);
 
     return () => {
       window.clearTimeout(reactTimer);
@@ -112,8 +117,8 @@ export default function MoodMascot() {
         hideTimer = window.setTimeout(() => {
           setBubbleVisible(false);
           schedule();
-        }, 3800);
-      }, 6000 + Math.random() * 5000);
+        }, IDLE_BUBBLE_DURATION_MS);
+      }, IDLE_BUBBLE_DELAY_MS + Math.random() * IDLE_BUBBLE_RANDOM_RANGE_MS);
     };
 
     schedule();

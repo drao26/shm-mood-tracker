@@ -1,8 +1,10 @@
 export const MOOD_PREVIEW_KEY = 'shm-mood-preview';
 export const MOOD_PREVIEW_EVENT = 'shm:mood-preview';
+const MIN_MOOD_SCORE = 0;
+const MAX_MOOD_SCORE = 10;
 
 function clampMood(score: number) {
-  return Math.max(0, Math.min(10, score));
+  return Math.max(MIN_MOOD_SCORE, Math.min(MAX_MOOD_SCORE, score));
 }
 
 export function getMoodPreview(): number | null {
