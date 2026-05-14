@@ -229,25 +229,28 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
     <div className="h-screen w-screen flex flex-col bg-[var(--desktop-bg)]">
       {/* tab bar */}
       <div className="flex bg-[var(--chrome)] border-b-2 border-b-[var(--chrome-dark)] overflow-x-auto shrink-0">
-        {tabs.map((t) => (
-          <button
-            key={t}
-            onClick={() => setActive(t)}
-            className={`px-1 py-1 text-[9px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[2px] relative ${
-              active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
-            }`}
-          >
-            <img
-              src={iconMap[t]}
-              alt=""
-              className={`w-[12px] h-[12px] object-contain${t === 'today' && shouldNudge ? ' nudge-icon' : ''}`}
-            />
-            {t}
-            {t === 'today' && shouldNudge && (
-              <span className="absolute top-0 right-0 w-[6px] h-[6px] rounded-full bg-[var(--title-active)] border border-white" />
-            )}
-          </button>
-        ))}
+        {tabs.map((t) => {
+          const isNudgeTab = t === 'today' && shouldNudge;
+          return (
+            <button
+              key={t}
+              onClick={() => setActive(t)}
+              className={`px-1 py-1 text-[9px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[2px] relative ${
+                active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
+              }`}
+            >
+              <img
+                src={iconMap[t]}
+                alt=""
+                className={`w-[12px] h-[12px] object-contain${isNudgeTab ? ' nudge-icon' : ''}`}
+              />
+              {t}
+              {isNudgeTab && (
+                <span className="absolute top-0 right-0 w-[6px] h-[6px] rounded-full bg-[var(--title-active)] border border-white" />
+              )}
+            </button>
+          );
+        })}
         <button
           onClick={onSwitchUser}
           className="px-1 py-1 text-[9px] whitespace-nowrap text-[var(--text)] ml-auto"

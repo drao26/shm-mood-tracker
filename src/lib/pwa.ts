@@ -63,5 +63,5 @@ function urlBase64ToUint8Array(base64String: string): ArrayBuffer {
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
-  return outputArray.buffer as ArrayBuffer;
+  return outputArray.buffer;
 }
