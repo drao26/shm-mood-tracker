@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { ThemeSummary } from './themes';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -89,3 +90,25 @@ export async function getMoodsForMonth(year: number, month: number) {
   if (error) throw error;
   return (data as MoodEntry[]) ?? [];
 }
+
+export async function getCachedThemes(
+  name: string,
+): Promise<{ themes: ThemeSummary[]; generatedAt: string } | null> {
+  const { data, error } = await supabase
+    .from('theme_summaries')
+    .select('themes, generated_at')
+    .eq('name', name)
+    .eq('period', 'all-time')
+    .single();
+  if (error && error.code !== 'PGRST116') throw error;
+  return data ? { themes: data.themes as ThemeSummary[], generatedAt: data.generated_at as string } : null;
+}
+
+export async function refreshThemesAI(name: string): Promise<ThemeSummary[]> {
+  const { data, error } = await supabase.functions.invoke('extract-themes', {
+    body: { name },
+  });
+  if (error) throw error;
+  return (data as { themes?: ThemeSummary[] }).themes ?? [];
+}
+
