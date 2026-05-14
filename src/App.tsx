@@ -5,7 +5,7 @@ import { getDailyPalette } from './lib/palette';
 import { getLocalDate } from './lib/dateUtils';
 
 const BOOT_SEEN_KEY = 'shm-boot-seen-v1';
-const BOOT_DURATION_MS = 3800;
+const BOOT_DURATION_MS = 3400;
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(window.innerWidth < 768);
@@ -39,7 +39,11 @@ function getStoredUser(): string | null {
 }
 
 function shouldShowBoot(): boolean {
-  return localStorage.getItem(BOOT_SEEN_KEY) !== '1';
+  try {
+    return localStorage.getItem(BOOT_SEEN_KEY) !== '1';
+  } catch {
+    return false;
+  }
 }
 
 function BootScreen({ onDone }: { onDone: () => void }) {
@@ -58,7 +62,7 @@ function BootScreen({ onDone }: { onDone: () => void }) {
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+      if (event.key === 'Escape' || event.key === 'Enter') {
         onDone();
       }
     }
@@ -67,15 +71,22 @@ function BootScreen({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div className="boot95-screen" onClick={onDone}>
-      <div className="boot95-frame" role="dialog" aria-label="boot animation">
+    <div className="boot95-screen">
+      <div className="boot95-frame" role="region" aria-label="Boot animation">
         <p>C:\\&gt; boot shm.exe /safe</p>
         <p className="mt-3">Starting Windows 95...</p>
         <p className="boot95-loading mt-2">Loading shm.exe</p>
-        <div className="boot95-progress mt-3" aria-hidden="true">
+        <div
+          className="boot95-progress mt-3"
+          role="progressbar"
+          aria-label="Boot progress"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+        >
           <div className="boot95-progress-fill" style={{ width: `${progress}%` }} />
         </div>
-        <button type="button" className="boot95-skip mt-3" onClick={(event) => { event.stopPropagation(); onDone(); }}>
+        <button type="button" className="boot95-skip mt-3" onClick={onDone}>
           skip boot
         </button>
       </div>
@@ -89,7 +100,9 @@ export default function App() {
   const [userName, setUserName] = useState<string | null>(getStoredUser);
   const isMobile = useIsMobile();
   const handleBootDone = useCallback(() => {
-    localStorage.setItem(BOOT_SEEN_KEY, '1');
+    try {
+      localStorage.setItem(BOOT_SEEN_KEY, '1');
+    } catch {}
     setShowBoot(false);
   }, []);
 
