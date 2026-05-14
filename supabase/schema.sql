@@ -1,4 +1,5 @@
 -- moods table
+
 create table if not exists moods (
   id uuid primary key default gen_random_uuid(),
   name text not null check (name in ('april', 'angie', 'deepthi')),
@@ -17,6 +18,25 @@ alter table moods enable row level security;
 -- this is a private 3-person tool behind an unguessable URL
 create policy "allow all for anon"
   on moods
+  for all
+  to anon
+  using (true)
+  with check (true);
+
+-- theme_summaries table (AI-generated / rule-based theme cache)
+create table if not exists theme_summaries (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (name in ('april', 'angie', 'deepthi')),
+  period text not null,                -- 'all-time' for now; future: '2026-05' for monthly
+  themes jsonb not null,               -- ThemeSummary[] (same shape as src/lib/themes.ts)
+  generated_at timestamptz default now(),
+  unique (name, period)
+);
+
+alter table theme_summaries enable row level security;
+
+create policy "allow all for anon"
+  on theme_summaries
   for all
   to anon
   using (true)
