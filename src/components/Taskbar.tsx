@@ -65,7 +65,7 @@ export default function Taskbar({ windows, activeId, onTaskClick, userName, onSw
       </div>
 
       {/* clock + user */}
-      <div className="border border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] flex items-center h-[22px] px-1">
+      <div className="border border95-inset flex items-center h-[22px] px-1">
         <Clock />
         {userName && <span className="text-[11px] text-[var(--text)] border-l border-l-[var(--chrome-dark)] pl-1 ml-1">{userName}</span>}
       </div>

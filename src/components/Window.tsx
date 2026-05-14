@@ -155,28 +155,28 @@ export default function Window({
           {onMinimise && (
             <button
               onClick={(e) => { e.stopPropagation(); onMinimise(); }}
-              className="w-[16px] h-[14px] border border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-dark)] border-r-[var(--chrome-dark)] bg-[var(--chrome)] text-[10px] leading-none flex items-center justify-center active:border-t-[var(--chrome-dark)] active:border-l-[var(--chrome-dark)] active:border-b-[var(--chrome-light)] active:border-r-[var(--chrome-light)]"
+              className="w-[16px] h-[14px] border border95-outset bg-[var(--chrome)] text-[10px] leading-none flex items-center justify-center active:border95-inset"
               aria-label="Minimise"
             >_</button>
           )}
           {onMaximise && (
             <button
               onClick={(e) => { e.stopPropagation(); onMaximise(); }}
-              className="w-[16px] h-[14px] border border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-dark)] border-r-[var(--chrome-dark)] bg-[var(--chrome)] text-[10px] leading-none flex items-center justify-center active:border-t-[var(--chrome-dark)] active:border-l-[var(--chrome-dark)] active:border-b-[var(--chrome-light)] active:border-r-[var(--chrome-light)]"
+              className="w-[16px] h-[14px] border border95-outset bg-[var(--chrome)] text-[10px] leading-none flex items-center justify-center active:border95-inset"
               aria-label="Maximise"
             >□</button>
           )}
           {onClose && (
             <button
               onClick={(e) => { e.stopPropagation(); onClose(); }}
-              className="w-[16px] h-[14px] border border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-dark)] border-r-[var(--chrome-dark)] bg-[var(--chrome)] text-[10px] leading-none flex items-center justify-center active:border-t-[var(--chrome-dark)] active:border-l-[var(--chrome-dark)] active:border-b-[var(--chrome-light)] active:border-r-[var(--chrome-light)]"
+              className="w-[16px] h-[14px] border border95-outset bg-[var(--chrome)] text-[10px] leading-none flex items-center justify-center active:border95-inset"
               aria-label="Close"
             >×</button>
           )}
         </div>
       </div>
       {/* inset content area */}
-      <div className="border-2 border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] m-[2px] p-2 bg-white flex-1 overflow-auto text-[12px]">
+      <div className="border-2 border95-inset m-[2px] p-2 bg-white flex-1 overflow-auto text-[12px]">
         {children}
       </div>
       {/* resize edges */}

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
+import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
@@ -64,6 +65,7 @@ export default function Today() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [existingEntry, setExistingEntry] = useState(false);
+  const [showBsod, setShowBsod] = useState(false);
 
   const isToday = selectedDate === today;
   const displayDate = isToday ? getLocalDisplayDate() : formatDisplayDate(selectedDate);
@@ -151,9 +153,12 @@ export default function Today() {
       rant: rant.trim() || null,
     };
 
-    setSaved(true);
     setExistingEntry(true);
-    setError(null);
+    if (Math.random() < BSOD_PROBABILITY) {
+      setShowBsod(true);
+    } else {
+      setSaved(true);
+    }
 
     try {
       await upsertMood(entry);
@@ -161,6 +166,11 @@ export default function Today() {
       queueOfflineSave(entry);
     }
   }
+
+  const handleBsodDismiss = useCallback(() => {
+    setShowBsod(false);
+    setSaved(true);
+  }, []);
 
   if (loading) {
     return <p className="text-[11px] text-[var(--text)]">loading...</p>;
@@ -175,7 +185,9 @@ export default function Today() {
   }
 
   return (
-    <div className="space-y-3">
+    <>
+      {showBsod && <Bsod onDismiss={handleBsodDismiss} />}
+      <div className="space-y-3">
       <p className="text-[11px] text-[var(--text)]">
         hey {name} · {displayDate}
       </p>
@@ -189,7 +201,7 @@ export default function Today() {
           value={selectedDate}
           max={today}
           onChange={handleDateChange}
-          className="border-2 border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] bg-white text-[11px] px-1 py-[2px] outline-none"
+          className="border-2 border95-inset bg-white text-[11px] px-1 py-[2px] outline-none"
           style={{ fontFamily: 'inherit' }}
         />
       </div>
@@ -252,5 +264,6 @@ export default function Today() {
         )}
       </div>
     </div>
+    </>
   );
 }
