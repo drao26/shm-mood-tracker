@@ -172,9 +172,10 @@ export default function Minesweeper() {
     setBoard((currentBoard) => {
       const nextBoard = cloneBoard(currentBoard);
       const cell = nextBoard[row][col];
+      const currentFlagCount = nextBoard.flat().filter((boardCell) => boardCell.flagged).length;
 
       if (cell.revealed) return currentBoard;
-      if (!cell.flagged && flaggedCount >= MINE_COUNT) return currentBoard;
+      if (!cell.flagged && currentFlagCount >= MINE_COUNT) return currentBoard;
 
       cell.flagged = !cell.flagged;
       return nextBoard;
