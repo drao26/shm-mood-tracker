@@ -37,10 +37,10 @@ export function getStreakMilestone(streak: number): StreakMilestone | null {
 export function milestoneMessage(milestone: StreakMilestone): string {
   const labels: Record<StreakMilestone, string> = {
     3:   '3-day streak — you\'re building a habit! 🌱',
-    7:   'one whole week! keep it up! 🌟',
-    14:  'two weeks strong — you\'re on a roll! 🔥',
-    30:  'thirty days! incredible consistency! 💪',
-    100: '100 days!!! you\'re a mood-tracking legend! 🏆',
+    7:   '7-day streak — one whole week! keep it up! 🌟',
+    14:  '14-day streak — two weeks strong, you\'re on a roll! 🔥',
+    30:  '30-day streak — incredible consistency! 💪',
+    100: '100-day streak — you\'re a mood-tracking legend! 🏆',
   };
   return labels[milestone];
 }

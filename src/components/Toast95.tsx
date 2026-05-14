@@ -7,7 +7,7 @@ interface Toast95Props {
   type?: 'info' | 'achievement';
   /** Called when the toast should be dismissed. */
   onDismiss: () => void;
-  /** Auto-dismiss delay in milliseconds (default 3 500). */
+  /** Auto-dismiss delay in milliseconds (default 3500). */
   duration?: number;
 }
 
