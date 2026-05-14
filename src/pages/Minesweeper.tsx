@@ -32,11 +32,11 @@ function cloneBoard(board: Cell[][]) {
 function countAdjacentMines(board: Cell[][], row: number, col: number) {
   let count = 0;
 
-  for (let r = row - 1; r <= row + 1; r += 1) {
-    for (let c = col - 1; c <= col + 1; c += 1) {
-      if (r === row && c === col) continue;
-      if (r < 0 || r >= ROWS || c < 0 || c >= COLS) continue;
-      if (board[r][c].mine) count += 1;
+  for (let adjacentRow = row - 1; adjacentRow <= row + 1; adjacentRow += 1) {
+    for (let adjacentCol = col - 1; adjacentCol <= col + 1; adjacentCol += 1) {
+      if (adjacentRow === row && adjacentCol === col) continue;
+      if (adjacentRow < 0 || adjacentRow >= ROWS || adjacentCol < 0 || adjacentCol >= COLS) continue;
+      if (board[adjacentRow][adjacentCol].mine) count += 1;
     }
   }
 
@@ -82,10 +82,10 @@ function revealArea(board: Cell[][], startRow: number, startCol: number) {
 
     if (cell.mine || cell.adjacent !== 0) continue;
 
-    for (let r = row - 1; r <= row + 1; r += 1) {
-      for (let c = col - 1; c <= col + 1; c += 1) {
-        if (r === row && c === col) continue;
-        stack.push([r, c]);
+    for (let adjacentRow = row - 1; adjacentRow <= row + 1; adjacentRow += 1) {
+      for (let adjacentCol = col - 1; adjacentCol <= col + 1; adjacentCol += 1) {
+        if (adjacentRow === row && adjacentCol === col) continue;
+        stack.push([adjacentRow, adjacentCol]);
       }
     }
   }
@@ -172,10 +172,9 @@ export default function Minesweeper() {
     setBoard((currentBoard) => {
       const nextBoard = cloneBoard(currentBoard);
       const cell = nextBoard[row][col];
-      const currentFlaggedCount = currentBoard.flat().filter((boardCell) => boardCell.flagged).length;
 
       if (cell.revealed) return currentBoard;
-      if (!cell.flagged && currentFlaggedCount >= MINE_COUNT) return currentBoard;
+      if (!cell.flagged && flaggedCount >= MINE_COUNT) return currentBoard;
 
       cell.flagged = !cell.flagged;
       return nextBoard;
