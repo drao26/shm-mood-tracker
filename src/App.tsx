@@ -3,6 +3,7 @@ import Desktop, { MobileShell } from './components/Desktop';
 import Home from './pages/Home';
 import { getDailyPalette } from './lib/palette';
 import { getLocalDate } from './lib/dateUtils';
+import { clearMoodPreview } from './lib/moodSignal';
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(window.innerWidth < 768);
@@ -49,6 +50,7 @@ export default function App() {
   function handleSwitchUser() {
     localStorage.removeItem('shm-user');
     localStorage.removeItem('shm-user-date');
+    clearMoodPreview();
     setUserName(null);
   }
 

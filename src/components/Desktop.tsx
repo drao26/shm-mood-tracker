@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import DesktopIcon from './DesktopIcon';
 import Taskbar from './Taskbar';
 import Window, { WindowTone } from './Window';
+import MoodMascot from './MoodMascot';
 import { useDesktop } from '../hooks/useDesktop';
 import Today from '../pages/Today';
 import MyHeatmaps from '../pages/MyHeatmaps';
@@ -138,6 +139,8 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
             </Window>
           );
         })}
+
+        <MoodMascot />
       </div>
 
       {/* taskbar */}

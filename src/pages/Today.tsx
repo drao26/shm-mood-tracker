@@ -4,6 +4,7 @@ import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
 import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
+import { setMoodPreview } from '../lib/moodSignal';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
 
@@ -75,6 +76,10 @@ export default function Today() {
       cancelled = true;
     };
   }, [name, selectedDate]);
+
+  useEffect(() => {
+    setMoodPreview(score);
+  }, [score]);
 
   function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSelectedDate(e.target.value);
