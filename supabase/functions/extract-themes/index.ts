@@ -45,10 +45,10 @@ Deno.serve(async (req) => {
       return jsonResponse({ themes: [] });
     }
 
-    // 2. Call Gemini 1.5 Flash
+    // 2. Call Gemini 2.5 Flash
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY')!);
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       generationConfig: { responseMimeType: 'application/json' },
     });
 
