@@ -7,7 +7,7 @@ const MOOD_BUBBLE_DURATION_MS = 4600;
 const IDLE_BUBBLE_DURATION_MS = 3800;
 const IDLE_BUBBLE_DELAY_MS = 6000;
 const IDLE_BUBBLE_RANDOM_RANGE_MS = 5000;
-type TimerId = number;
+type TimerId = ReturnType<typeof setTimeout>;
 
 const commentaryByMode: Record<MascotMode, string[]> = {
   idle: [
@@ -67,7 +67,7 @@ export default function MoodMascot() {
   const idleTimers = useRef(new Set<TimerId>());
 
   const clearIdleTimers = useCallback(() => {
-    idleTimers.current.forEach((timerId) => window.clearTimeout(timerId));
+    idleTimers.current.forEach((timerId) => clearTimeout(timerId));
     idleTimers.current.clear();
   }, []);
 
@@ -109,12 +109,12 @@ export default function MoodMascot() {
     setLine((current) => pickLine(commentaryByMode[mode], current));
     setBubbleVisible(true);
 
-    const reactTimer = window.setTimeout(() => setReacting(false), REACTION_DURATION_MS);
-    const hideTimer = window.setTimeout(() => setBubbleVisible(false), MOOD_BUBBLE_DURATION_MS);
+    const reactTimer = setTimeout(() => setReacting(false), REACTION_DURATION_MS);
+    const hideTimer = setTimeout(() => setBubbleVisible(false), MOOD_BUBBLE_DURATION_MS);
 
     return () => {
-      window.clearTimeout(reactTimer);
-      window.clearTimeout(hideTimer);
+      clearTimeout(reactTimer);
+      clearTimeout(hideTimer);
     };
   }, [mode]);
 
@@ -123,13 +123,13 @@ export default function MoodMascot() {
 
     const schedule = () => {
       const showTimer = trackIdleTimer(
-        window.setTimeout(() => {
+        setTimeout(() => {
           idleTimers.current.delete(showTimer);
           setLine((current) => pickLine(commentaryByMode[mode], current));
           setBubbleVisible(true);
 
           const hideTimer = trackIdleTimer(
-            window.setTimeout(() => {
+            setTimeout(() => {
               idleTimers.current.delete(hideTimer);
               setBubbleVisible(false);
               schedule();
