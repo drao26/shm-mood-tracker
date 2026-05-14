@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getMoodPreview, MOOD_PREVIEW_EVENT, MOOD_PREVIEW_KEY } from '../lib/moodSignal';
 
 type MascotMode = 'idle' | 'neutral' | 'storm' | 'sunny';
@@ -7,6 +7,7 @@ const MOOD_BUBBLE_DURATION_MS = 4600;
 const IDLE_BUBBLE_DURATION_MS = 3800;
 const IDLE_BUBBLE_DELAY_MS = 6000;
 const IDLE_BUBBLE_RANDOM_RANGE_MS = 5000;
+type TimerId = number;
 
 const commentaryByMode: Record<MascotMode, string[]> = {
   idle: [
@@ -63,6 +64,17 @@ export default function MoodMascot() {
   const [reacting, setReacting] = useState(false);
   const mode = useMemo(() => getMode(score), [score]);
   const previousMode = useRef<MascotMode>(mode);
+  const idleTimers = useRef(new Set<TimerId>());
+
+  const clearIdleTimers = useCallback(() => {
+    idleTimers.current.forEach((timerId) => window.clearTimeout(timerId));
+    idleTimers.current.clear();
+  }, []);
+
+  const trackIdleTimer = useCallback((timerId: TimerId) => {
+    idleTimers.current.add(timerId);
+    return timerId;
+  }, []);
 
   useEffect(() => {
     const syncScore = (nextScore: number | null) => {
@@ -107,27 +119,29 @@ export default function MoodMascot() {
   }, [mode]);
 
   useEffect(() => {
-    let showTimer = 0;
-    let hideTimer = 0;
+    clearIdleTimers();
 
     const schedule = () => {
-      showTimer = window.setTimeout(() => {
-        setLine((current) => pickLine(commentaryByMode[mode], current));
-        setBubbleVisible(true);
-        hideTimer = window.setTimeout(() => {
-          setBubbleVisible(false);
-          schedule();
-        }, IDLE_BUBBLE_DURATION_MS);
-      }, IDLE_BUBBLE_DELAY_MS + Math.random() * IDLE_BUBBLE_RANDOM_RANGE_MS);
+      const showTimer = trackIdleTimer(
+        window.setTimeout(() => {
+          idleTimers.current.delete(showTimer);
+          setLine((current) => pickLine(commentaryByMode[mode], current));
+          setBubbleVisible(true);
+
+          const hideTimer = trackIdleTimer(
+            window.setTimeout(() => {
+              idleTimers.current.delete(hideTimer);
+              setBubbleVisible(false);
+              schedule();
+            }, IDLE_BUBBLE_DURATION_MS)
+          );
+        }, IDLE_BUBBLE_DELAY_MS + Math.random() * IDLE_BUBBLE_RANDOM_RANGE_MS)
+      );
     };
 
     schedule();
-
-    return () => {
-      window.clearTimeout(showTimer);
-      window.clearTimeout(hideTimer);
-    };
-  }, [mode]);
+    return clearIdleTimers;
+  }, [clearIdleTimers, mode, trackIdleTimer]);
 
   return (
     <div className="pointer-events-none absolute bottom-5 right-5 z-40 flex items-end gap-3">
