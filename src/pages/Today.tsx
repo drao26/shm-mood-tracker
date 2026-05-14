@@ -5,6 +5,7 @@ import Button95 from '../components/Button95';
 import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
+import { markTodayLogged } from '../lib/nudge';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
@@ -47,6 +48,8 @@ export default function Today() {
           setGratitude(existing.gratitude ?? '');
           setRant(existing.rant ?? '');
           setExistingEntry(true);
+          // Record in localStorage so the nudge hook knows they've already logged
+          if (name) markTodayLogged(name);
         } else {
           setScore(5);
           setGratitude('');
@@ -89,6 +92,8 @@ export default function Today() {
     });
     setSaved(true);
     setExistingEntry(true);
+    // Record in localStorage so the nudge hook stops animating immediately
+    markTodayLogged(name);
   }
 
   if (loading) {

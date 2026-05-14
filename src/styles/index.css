@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Nudge animation — applied to the Today icon when user hasn't logged by 9 pm */
+@keyframes icon-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  15%       { transform: rotate(-10deg); }
+  30%       { transform: rotate(10deg); }
+  45%       { transform: rotate(-6deg); }
+  60%       { transform: rotate(6deg); }
+  75%       { transform: rotate(-3deg); }
+}
+
+@keyframes icon-glow {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50%       { box-shadow: 0 0 10px 4px var(--title-active); }
+}
+
+.nudge-icon {
+  animation: icon-wiggle 1.4s ease-in-out 0s infinite,
+             icon-glow   2.5s ease-in-out 0s infinite;
+}
+
 @font-face {
   font-family: "MS Sans Serif";
   src: url("/fonts/ms_sans_serif.woff2") format("woff2");

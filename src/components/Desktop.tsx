@@ -3,6 +3,7 @@ import DesktopIcon from './DesktopIcon';
 import Taskbar from './Taskbar';
 import Window, { WindowTone } from './Window';
 import { useDesktop } from '../hooks/useDesktop';
+import { useNudge } from '../hooks/useNudge';
 import Today from '../pages/Today';
 import MyHeatmaps from '../pages/MyHeatmaps';
 import MoodMap from '../pages/MoodMap';
@@ -69,6 +70,7 @@ function WindowContent({ id, userName }: { id: string; userName: string | null }
 export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   const desktop = useDesktop();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  const shouldNudge = useNudge(userName);
 
   // Show welcome window first, then auto-open today after 2s
   useEffect(() => {
@@ -100,6 +102,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
               label={icon.label}
               iconSrc={icon.iconSrc}
               selected={selectedIcon === icon.id}
+              nudge={icon.id === 'today' && shouldNudge}
               onSelect={() => setSelectedIcon(icon.id)}
               onOpen={() => handleIconOpen(icon)}
             />
@@ -156,6 +159,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
 export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   const tabs = ['home', 'today', 'calendar', 'april', 'angie', 'deepthi', 'mood map'] as const;
   const [active, setActive] = useState<string>('home');
+  const shouldNudge = useNudge(userName);
 
   const goToToday = useCallback(() => setActive('today'), []);
 
@@ -229,12 +233,19 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
           <button
             key={t}
             onClick={() => setActive(t)}
-            className={`px-1 py-1 text-[9px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[2px] ${
+            className={`px-1 py-1 text-[9px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[2px] relative ${
               active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
             }`}
           >
-            <img src={iconMap[t]} alt="" className="w-[12px] h-[12px] object-contain" />
+            <img
+              src={iconMap[t]}
+              alt=""
+              className={`w-[12px] h-[12px] object-contain${t === 'today' && shouldNudge ? ' nudge-icon' : ''}`}
+            />
             {t}
+            {t === 'today' && shouldNudge && (
+              <span className="absolute top-0 right-0 w-[6px] h-[6px] rounded-full bg-[var(--title-active)] border border-white" />
+            )}
           </button>
         ))}
         <button
