@@ -118,7 +118,7 @@ export default function Today() {
           value={selectedDate}
           max={today}
           onChange={handleDateChange}
-          className="border-2 border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] bg-white text-[11px] px-1 py-[2px] outline-none"
+          className="border-2 border95-inset bg-white text-[11px] px-1 py-[2px] outline-none"
           style={{ fontFamily: 'inherit' }}
         />
       </div>

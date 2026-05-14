@@ -61,10 +61,10 @@ export default function Trackbar({ value, min = 0, max = 10, onChange }: Trackba
           style={{ background: getSliderGradient() }}
         />
         {/* sunken bevel track */}
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] border border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)] bg-transparent" />
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] border border95-inset bg-transparent" />
         {/* thumb */}
         <div
-          className="absolute top-0 w-[12px] h-[20px] border-2 border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-dark)] border-r-[var(--chrome-dark)] bg-[var(--chrome)]"
+          className="absolute top-0 w-[12px] h-[20px] border-2 border95-outset bg-[var(--chrome)]"
           style={{ left: `calc(${pct}% - 6px)` }}
         />
       </div>
