@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import DesktopIcon from './DesktopIcon';
 import Taskbar from './Taskbar';
 import Window, { WindowTone } from './Window';
@@ -76,6 +76,15 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   const desktop = useDesktop();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const shouldNudge = useNudge(userName);
+  const desktopAreaRef = useRef<HTMLDivElement>(null);
+  const dragStateRef = useRef<{
+    iconId: string;
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
 
   // Show welcome window first, then auto-open today after 2s
   useEffect(() => {
@@ -92,27 +101,79 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
     desktop.open(icon.id, icon.title, icon.tone, icon.iconSrc);
   }
 
+  function getDefaultIconPosition(index: number) {
+    return { x: 16, y: 16 + index * 88 };
+  }
+
+  const handleIconPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>, iconId: string, index: number) => {
+    const area = desktopAreaRef.current;
+    if (!area) return;
+    const current = desktop.iconPositions[iconId] ?? getDefaultIconPosition(index);
+    dragStateRef.current = {
+      iconId,
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      originX: current.x,
+      originY: current.y,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setSelectedIcon(iconId);
+    e.stopPropagation();
+  }, [desktop.iconPositions]);
+
+  const handleIconPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const dragState = dragStateRef.current;
+    const area = desktopAreaRef.current;
+    if (!dragState || !area || dragState.pointerId !== e.pointerId) return;
+
+    const dx = e.clientX - dragState.startX;
+    const dy = e.clientY - dragState.startY;
+    const maxX = Math.max(0, area.clientWidth - 68);
+    const maxY = Math.max(0, area.clientHeight - 88);
+    const x = Math.max(0, Math.min(maxX, dragState.originX + dx));
+    const y = Math.max(0, Math.min(maxY, dragState.originY + dy));
+    desktop.setIconPosition(dragState.iconId, { x, y });
+  }, [desktop]);
+
+  const handleIconPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStateRef.current?.pointerId === e.pointerId) {
+      dragStateRef.current = null;
+    }
+  }, []);
+
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--desktop-bg)]">
       {/* desktop area */}
       <div
+        ref={desktopAreaRef}
         className="flex-1 relative overflow-hidden"
         onClick={() => setSelectedIcon(null)}
       >
-        {/* icon column */}
-        <div className="absolute top-4 left-4 flex flex-col gap-4 z-[1]">
-          {icons.map((icon) => (
-            <DesktopIcon
+        {/* draggable icons */}
+        {icons.map((icon, index) => {
+          const position = desktop.iconPositions[icon.id] ?? getDefaultIconPosition(index);
+          return (
+            <div
               key={icon.id}
-              label={icon.label}
-              iconSrc={icon.iconSrc}
-              selected={selectedIcon === icon.id}
-              nudge={icon.id === 'today' && shouldNudge}
-              onSelect={() => setSelectedIcon(icon.id)}
-              onOpen={() => handleIconOpen(icon)}
-            />
-          ))}
-        </div>
+              className="absolute z-[1]"
+              style={{ left: position.x, top: position.y }}
+              onPointerDown={(e) => handleIconPointerDown(e, icon.id, index)}
+              onPointerMove={handleIconPointerMove}
+              onPointerUp={handleIconPointerUp}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <DesktopIcon
+                label={icon.label}
+                iconSrc={icon.iconSrc}
+                selected={selectedIcon === icon.id}
+                nudge={icon.id === 'today' && shouldNudge}
+                onSelect={() => setSelectedIcon(icon.id)}
+                onOpen={() => handleIconOpen(icon)}
+              />
+            </div>
+          );
+        })}
 
         {/* windows */}
         {desktop.windows.map((w) => {
@@ -129,6 +190,8 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
               maximised={w.maximised}
               draggable
               resizable
+              initialPosition={desktop.windowPositions[w.id]}
+              onPositionChange={(position) => desktop.setWindowPosition(w.id, position)}
               onClose={() => desktop.close(w.id)}
               onMinimise={() => desktop.minimise(w.id)}
               onMaximise={() => desktop.maximise(w.id)}

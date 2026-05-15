@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 
 export type WindowTone = 'mint' | 'lavender' | 'peach' | 'butter' | 'pink';
 
@@ -18,6 +18,8 @@ interface WindowProps {
   onFocus?: () => void;
   draggable?: boolean;
   resizable?: boolean;
+  initialPosition?: { x: number; y: number };
+  onPositionChange?: (position: { x: number; y: number }) => void;
   style?: React.CSSProperties;
 }
 
@@ -33,6 +35,8 @@ export default function Window({
   onFocus,
   draggable = false,
   resizable = false,
+  initialPosition,
+  onPositionChange,
   style,
 }: WindowProps) {
   const titleBg = active
@@ -44,6 +48,11 @@ export default function Window({
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const dragStart = useRef<{ mx: number; my: number; x: number; y: number } | null>(null);
   const resizeStart = useRef<{ mx: number; my: number; w: number; h: number; x: number; edge: ResizeEdge } | null>(null);
+
+  useEffect(() => {
+    if (!initialPosition) return;
+    setPos(initialPosition);
+  }, [initialPosition]);
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -65,9 +74,11 @@ export default function Window({
       const dy = e.clientY - dragStart.current.my;
       const nx = Math.max(0, Math.min(window.innerWidth - 100, dragStart.current.x + dx));
       const ny = Math.max(0, Math.min(window.innerHeight - 50, dragStart.current.y + dy));
-      setPos({ x: nx, y: ny });
+      const nextPosition = { x: nx, y: ny };
+      setPos(nextPosition);
+      onPositionChange?.(nextPosition);
     },
-    []
+    [onPositionChange]
   );
 
   const handlePointerUp = useCallback(() => {
