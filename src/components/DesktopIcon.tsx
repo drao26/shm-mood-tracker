@@ -2,11 +2,13 @@ interface DesktopIconProps {
   label: string;
   iconSrc: string;
   selected?: boolean;
+  /** When true the icon wiggles and glows to nudge the user to log their mood. */
+  nudge?: boolean;
   onOpen: () => void;
   onSelect: () => void;
 }
 
-export default function DesktopIcon({ label, iconSrc, selected, onOpen, onSelect }: DesktopIconProps) {
+export default function DesktopIcon({ label, iconSrc, selected, nudge, onOpen, onSelect }: DesktopIconProps) {
   return (
     <div
       className="flex flex-col items-center gap-1 cursor-pointer w-[68px]"
@@ -15,7 +17,7 @@ export default function DesktopIcon({ label, iconSrc, selected, onOpen, onSelect
       onTouchEnd={(e) => { e.preventDefault(); onOpen(); }}
     >
       {/* TODO: replace placeholder, expects 48x48 PNG */}
-      <div className="w-[48px] h-[48px] border border-dashed border-[var(--chrome-dark)] flex items-center justify-center text-[9px] text-[var(--chrome-darker)]">
+      <div className={`w-[48px] h-[48px] border border-dashed border-[var(--chrome-dark)] flex items-center justify-center text-[9px] text-[var(--chrome-darker)]${nudge ? ' nudge-icon' : ''}`}>
         <img
           src={iconSrc}
           alt={label}

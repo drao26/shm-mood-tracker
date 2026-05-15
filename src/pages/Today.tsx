@@ -9,6 +9,7 @@ import Toast95 from '../components/Toast95';
 import { getTodayMood, getMoodsForUser, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
+import { markTodayLogged } from '../lib/nudge';
 import { playDing } from '../lib/sound';
 import { calculateStreak, getStreakMilestone, milestoneMessage } from '../lib/streak';
 
@@ -103,6 +104,8 @@ export default function Today() {
           setGratitude(existing.gratitude ?? '');
           setRant(existing.rant ?? '');
           setExistingEntry(true);
+          // Record in localStorage so the nudge hook knows they've already logged
+          if (name) markTodayLogged(name);
         } else {
           setScore(5);
           setGratitude('');
@@ -166,6 +169,8 @@ export default function Today() {
     };
 
     setExistingEntry(true);
+    // Record in localStorage so the nudge hook stops animating immediately
+    markTodayLogged(name);
 
     // Celebratory feedback
     playDing();

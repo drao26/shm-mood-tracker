@@ -4,6 +4,7 @@ import Taskbar from './Taskbar';
 import Window, { WindowTone } from './Window';
 import MoodMascot from './MoodMascot';
 import { useDesktop } from '../hooks/useDesktop';
+import { useNudge } from '../hooks/useNudge';
 import Today from '../pages/Today';
 import MyHeatmaps from '../pages/MyHeatmaps';
 import MoodMap from '../pages/MoodMap';
@@ -74,6 +75,7 @@ function WindowContent({ id, userName }: { id: string; userName: string | null }
 export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   const desktop = useDesktop();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  const shouldNudge = useNudge(userName);
   const desktopAreaRef = useRef<HTMLDivElement>(null);
   const dragStateRef = useRef<{
     iconId: string;
@@ -189,6 +191,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
                 label={icon.label}
                 iconSrc={icon.iconSrc}
                 selected={selectedIcon === icon.id}
+                nudge={icon.id === 'today' && shouldNudge}
                 onSelect={() => setSelectedIcon(icon.id)}
                 onOpen={() => handleIconOpen(icon)}
               />
@@ -250,6 +253,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
 export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   const tabs = ['home', 'today', 'calendar', 'april', 'angie', 'deepthi', 'mood map'] as const;
   const [active, setActive] = useState<string>('home');
+  const shouldNudge = useNudge(userName);
 
   const goToToday = useCallback(() => setActive('today'), []);
 
@@ -319,18 +323,28 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
     <div className="h-screen w-screen flex flex-col bg-[var(--desktop-bg)]">
       {/* tab bar */}
       <div className="flex bg-[var(--chrome)] border-b-2 border-b-[var(--chrome-dark)] overflow-x-auto shrink-0">
-        {tabs.map((t) => (
-          <button
-            key={t}
-            onClick={() => setActive(t)}
-            className={`px-1 py-1 text-[9px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[2px] ${
-              active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
-            }`}
-          >
-            <img src={iconMap[t]} alt="" className="w-[12px] h-[12px] object-contain" />
-            {t}
-          </button>
-        ))}
+        {tabs.map((t) => {
+          const isNudgeTab = t === 'today' && shouldNudge;
+          return (
+            <button
+              key={t}
+              onClick={() => setActive(t)}
+              className={`px-1 py-1 text-[9px] whitespace-nowrap border-r border-r-[var(--chrome-dark)] flex items-center gap-[2px] relative ${
+                active === t ? 'bg-white font-bold' : 'text-[var(--text)]'
+              }`}
+            >
+              <img
+                src={iconMap[t]}
+                alt=""
+                className={`w-[12px] h-[12px] object-contain${isNudgeTab ? ' nudge-icon' : ''}`}
+              />
+              {t}
+              {isNudgeTab && (
+                <span className="absolute top-0 right-0 w-[6px] h-[6px] rounded-full bg-[var(--title-active)] border border-white" />
+              )}
+            </button>
+          );
+        })}
         <button
           onClick={onSwitchUser}
           className="px-1 py-1 text-[9px] whitespace-nowrap text-[var(--text)] ml-auto"
