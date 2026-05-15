@@ -8,6 +8,7 @@ import Today from '../pages/Today';
 import MyHeatmaps from '../pages/MyHeatmaps';
 import MoodMap from '../pages/MoodMap';
 import Calendar from '../pages/Calendar';
+import Minesweeper from '../pages/Minesweeper';
 
 interface DesktopProps {
   userName: string | null;
@@ -31,6 +32,7 @@ const icons: IconDef[] = [
   { id: 'angie', label: 'angie', iconSrc: `${base}images/200.gif`, tone: 'lavender', title: "angie's profile" },
   { id: 'deepthi', label: 'deepthi', iconSrc: `${base}images/deq6tia-a79fea75-f6a5-43d7-a783-c8fb175f7922.gif`, tone: 'lavender', title: "deepthi's profile" },
   { id: 'moodmap', label: 'mood map', iconSrc: `${base}images/star.gif`, tone: 'peach', title: 'swedish house mafia mood map' },
+  { id: 'minesweeper', label: 'minesweeper', iconSrc: `${base}images/minesweeper-icon.svg`, tone: 'butter', title: 'minesweeper' },
 ];
 
 function WindowContent({ id, userName }: { id: string; userName: string | null }) {
@@ -55,6 +57,8 @@ function WindowContent({ id, userName }: { id: string; userName: string | null }
       return <MyHeatmaps overrideName="deepthi" />;
     case 'moodmap':
       return <MoodMap />;
+    case 'minesweeper':
+      return <Minesweeper />;
     case 'settings':
       return (
         <div className="text-[12px] text-[var(--text)] p-2">
