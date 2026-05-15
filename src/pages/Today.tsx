@@ -4,12 +4,13 @@ import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
 import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
+import { setMoodPreview } from '../lib/moodSignal';
 import Toast95 from '../components/Toast95';
 import { getTodayMood, getMoodsForUser, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
 import { playDing } from '../lib/sound';
-import { calculateStreak, getStreakMilestone, milestoneMessage, StreakMilestone } from '../lib/streak';
+import { calculateStreak, getStreakMilestone, milestoneMessage } from '../lib/streak';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
@@ -83,6 +84,10 @@ export default function Today() {
     };
   }, [name, selectedDate]);
 
+  useEffect(() => {
+    setMoodPreview(score);
+  }, [score]);
+
   function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSelectedDate(e.target.value);
   }
@@ -114,7 +119,7 @@ export default function Today() {
       const streak = calculateStreak(dates, selectedDate);
       const milestone = getStreakMilestone(streak);
       if (milestone !== null) {
-        setToast({ type: 'achievement', message: milestoneMessage(milestone as StreakMilestone) });
+        setToast({ type: 'achievement', message: milestoneMessage(milestone) });
       }
     } catch {
       // Streak check is best-effort — don't surface errors to the user
@@ -155,82 +160,82 @@ export default function Today() {
             onDismiss={dismissToast}
           />
         )}
-      <p className="text-[11px] text-[var(--text)]">
-        hey {name} · {displayDate}
-      </p>
-
-      <div>
-        <label className="block text-[11px] text-[var(--text)] mb-1">
-          date:
-        </label>
-        <input
-          type="date"
-          value={selectedDate}
-          max={today}
-          onChange={handleDateChange}
-          className="border-2 border95-inset bg-white text-[11px] px-1 py-[2px] outline-none"
-          style={{ fontFamily: 'inherit' }}
-        />
-      </div>
-
-      {isLocked && (
-        <p className="text-[11px] text-[var(--accent)]">
-          entry already exists for {displayDate} — previous entries can't be overwritten
+        <p className="text-[11px] text-[var(--text)]">
+          hey {name} · {displayDate}
         </p>
-      )}
 
-      <div>
-        <label className="block text-[11px] text-[var(--text)] mb-1">
-          how are you feeling{isToday ? ' today' : ''}?
-        </label>
-        <Trackbar value={score} onChange={isLocked ? () => {} : setScore} />
-        <div className="flex items-center gap-1 mt-1">
-          <span className="text-[9px] text-gray-400">0</span>
-          {moodScale.map((color, i) => (
-            <div
-              key={i}
-              className="w-[10px] h-[10px] rounded-sm"
-              style={{ backgroundColor: color }}
-            />
-          ))}
-          <span className="text-[9px] text-gray-400">10</span>
+        <div>
+          <label className="block text-[11px] text-[var(--text)] mb-1">
+            date:
+          </label>
+          <input
+            type="date"
+            value={selectedDate}
+            max={today}
+            onChange={handleDateChange}
+            className="border-2 border95-inset bg-white text-[11px] px-1 py-[2px] outline-none"
+            style={{ fontFamily: 'inherit' }}
+          />
+        </div>
+
+        {isLocked && (
+          <p className="text-[11px] text-[var(--accent)]">
+            entry already exists for {displayDate} — previous entries can't be overwritten
+          </p>
+        )}
+
+        <div>
+          <label className="block text-[11px] text-[var(--text)] mb-1">
+            how are you feeling{isToday ? ' today' : ''}?
+          </label>
+          <Trackbar value={score} onChange={isLocked ? () => {} : setScore} />
+          <div className="flex items-center gap-1 mt-1">
+            <span className="text-[9px] text-gray-400">0</span>
+            {moodScale.map((color, i) => (
+              <div
+                key={i}
+                className="w-[10px] h-[10px] rounded-sm"
+                style={{ backgroundColor: color }}
+              />
+            ))}
+            <span className="text-[9px] text-gray-400">10</span>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[11px] text-[var(--text)] mb-1">
+            what were you grateful for{isToday ? ' today' : ''}?
+          </label>
+          <Textarea95
+            value={gratitude}
+            onChange={(e) => setGratitude(e.target.value)}
+            placeholder="optional"
+            disabled={isLocked}
+          />
+        </div>
+
+        <div>
+          <label className="block text-[11px] text-[var(--text)] mb-1">
+            anything you want to rant about{isToday ? ' today' : ''}?
+          </label>
+          <Textarea95
+            value={rant}
+            onChange={(e) => setRant(e.target.value)}
+            placeholder="optional"
+            disabled={isLocked}
+          />
+        </div>
+
+        <div className="flex justify-end">
+          {isLocked ? (
+            <p className="text-[11px] text-[var(--text)]">logged for {displayDate} ✓</p>
+          ) : !saved ? (
+            <Button95 onClick={handleSave} className="w-[75px]">save</Button95>
+          ) : (
+            <p className="text-[11px] text-[var(--text)]">logged for {displayDate} ✓</p>
+          )}
         </div>
       </div>
-
-      <div>
-        <label className="block text-[11px] text-[var(--text)] mb-1">
-          what were you grateful for{isToday ? ' today' : ''}?
-        </label>
-        <Textarea95
-          value={gratitude}
-          onChange={(e) => setGratitude(e.target.value)}
-          placeholder="optional"
-          disabled={isLocked}
-        />
-      </div>
-
-      <div>
-        <label className="block text-[11px] text-[var(--text)] mb-1">
-          anything you want to rant about{isToday ? ' today' : ''}?
-        </label>
-        <Textarea95
-          value={rant}
-          onChange={(e) => setRant(e.target.value)}
-          placeholder="optional"
-          disabled={isLocked}
-        />
-      </div>
-
-      <div className="flex justify-end">
-        {isLocked ? (
-          <p className="text-[11px] text-[var(--text)]">logged for {displayDate} ✓</p>
-        ) : !saved ? (
-          <Button95 onClick={handleSave} className="w-[75px]">save</Button95>
-        ) : (
-          <p className="text-[11px] text-[var(--text)]">logged for {displayDate} ✓</p>
-        )}
-      </div>
-    </div>
     </>
   );
 }

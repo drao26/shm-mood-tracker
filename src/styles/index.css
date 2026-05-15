@@ -57,6 +57,292 @@ body {
   color: var(--text);
 }
 
+.mood-mascot {
+  position: relative;
+  width: 160px;
+  padding-top: 18px;
+}
+
+.mood-mascot__bubble {
+  position: relative;
+  width: 190px;
+  padding: 10px 12px;
+  border: 2px solid var(--chrome-darker);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.97), rgba(245, 240, 248, 0.96));
+  box-shadow:
+    inset -1px -1px 0 rgba(110, 106, 122, 0.22),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.72),
+    3px 3px 0 rgba(110, 106, 122, 0.25);
+  color: var(--text);
+  line-height: 1.35;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.mood-mascot__bubble::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  bottom: -12px;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, rgba(245, 240, 248, 0.96) 48%, transparent 49%);
+  border-right: 2px solid var(--chrome-darker);
+  border-bottom: 2px solid var(--chrome-darker);
+  transform: skewX(-20deg);
+}
+
+.mood-mascot__bubble--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mood-mascot__status {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  padding: 2px 8px;
+  border: 2px solid var(--chrome-darker);
+  background: linear-gradient(to right, var(--accent), var(--accent-light));
+  color: var(--text-inverse);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  box-shadow: 2px 2px 0 rgba(110, 106, 122, 0.18);
+}
+
+.mood-mascot__art {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 160px;
+  height: 160px;
+  overflow: visible;
+  animation: mascot-bob 4.5s ease-in-out infinite;
+}
+
+.mood-mascot__shadow {
+  position: absolute;
+  bottom: 8px;
+  left: 32px;
+  width: 98px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(81, 81, 93, 0.18);
+  filter: blur(1px);
+}
+
+.mood-mascot__clip {
+  fill: none;
+  stroke: #776f82;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mood-mascot__clip-highlight {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mood-mascot__arm,
+.mood-mascot__base,
+.mood-mascot__mouth {
+  fill: none;
+  stroke: #776f82;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.mood-mascot__arm--left {
+  animation: mascot-wave-left 4.8s ease-in-out infinite;
+  transform-origin: 46px 63px;
+}
+
+.mood-mascot__arm--right {
+  animation: mascot-wave-right 5.2s ease-in-out infinite;
+  transform-origin: 91px 63px;
+}
+
+.mood-mascot__eye {
+  fill: #1a1a1a;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.mood-mascot__eye--left {
+  animation: mascot-blink 6.4s infinite;
+}
+
+.mood-mascot__eye--right {
+  animation: mascot-blink 6.4s infinite 0.1s;
+}
+
+.mood-mascot__cheek {
+  fill: rgba(232, 168, 184, 0.55);
+}
+
+.mood-mascot__weather {
+  transform-origin: center;
+  animation: mascot-sway 3.8s ease-in-out infinite;
+}
+
+.mood-mascot__cloud {
+  fill: rgba(232, 235, 245, 0.98);
+  stroke: #8f90a3;
+  stroke-width: 2.5;
+}
+
+.mood-mascot__raindrop {
+  fill: #8cb7ff;
+  animation: mascot-rain 1.4s ease-in infinite;
+}
+
+.mood-mascot__raindrop--2 {
+  animation-delay: 0.18s;
+}
+
+.mood-mascot__raindrop--3 {
+  animation-delay: 0.32s;
+}
+
+.mood-mascot__sun-rays line {
+  stroke: #f0b93f;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.mood-mascot__sun-rays {
+  animation: mascot-spin 10s linear infinite;
+  transform-origin: 103px 29px;
+}
+
+.mood-mascot__sun-core {
+  fill: #ffd45d;
+  stroke: #f0b93f;
+  stroke-width: 3;
+}
+
+.mood-mascot__sunglasses {
+  fill: #2f3037;
+}
+
+.mood-mascot__sunglasses-bridge {
+  stroke: #2f3037;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.mood-mascot--storm .mood-mascot__clip,
+.mood-mascot--storm .mood-mascot__arm,
+.mood-mascot--storm .mood-mascot__base,
+.mood-mascot--storm .mood-mascot__mouth {
+  stroke: #69718a;
+}
+
+.mood-mascot--sunny .mood-mascot__clip,
+.mood-mascot--sunny .mood-mascot__arm,
+.mood-mascot--sunny .mood-mascot__base,
+.mood-mascot--sunny .mood-mascot__mouth {
+  stroke: #85715f;
+}
+
+.mood-mascot--reacting .mood-mascot__art {
+  animation:
+    mascot-react 0.9s ease,
+    mascot-bob 4.5s ease-in-out infinite 0.9s;
+}
+
+@keyframes mascot-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes mascot-react {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-10px) scale(1.05);
+  }
+  70% {
+    transform: translateY(2px) scale(0.97);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mascot-blink {
+  0%, 44%, 100% {
+    transform: scaleY(1);
+  }
+  46%, 48% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes mascot-wave-left {
+  0%, 100% {
+    transform: rotate(6deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+
+@keyframes mascot-wave-right {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes mascot-sway {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px) rotate(-3deg);
+  }
+}
+
+@keyframes mascot-rain {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes mascot-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .boot95-screen {
   height: 100%;
   width: 100%;

@@ -3,6 +3,7 @@ import Desktop, { MobileShell } from './components/Desktop';
 import Home from './pages/Home';
 import { getDailyPalette } from './lib/palette';
 import { getLocalDate } from './lib/dateUtils';
+import { clearMoodPreview } from './lib/moodSignal';
 
 const BOOT_SEEN_KEY = 'shm-boot-seen-v1';
 const BOOT_DURATION_MS = 3400;
@@ -115,6 +116,7 @@ export default function App() {
   function handleSwitchUser() {
     localStorage.removeItem('shm-user');
     localStorage.removeItem('shm-user-date');
+    clearMoodPreview();
     setUserName(null);
   }
 
