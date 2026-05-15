@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
+import confetti from 'canvas-confetti';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Button95 from '../components/Button95';
 import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
-import { getTodayMood, isSupabaseConfigured, upsertMood } from '../lib/supabase';
+import Toast95 from '../components/Toast95';
+import { getTodayMood, getMoodsForUser, isSupabaseConfigured, upsertMood } from '../lib/supabase';
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
+import { playDing } from '../lib/sound';
+import { calculateStreak, getStreakMilestone, milestoneMessage, StreakMilestone } from '../lib/streak';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
@@ -20,6 +24,9 @@ export default function Today() {
   const [error, setError] = useState<string | null>(null);
   const [existingEntry, setExistingEntry] = useState(false);
   const [showBsod, setShowBsod] = useState(false);
+  const [toast, setToast] = useState<{ type: 'info' | 'achievement'; message: string } | null>(null);
+
+  const dismissToast = useCallback(() => setToast(null), []);
 
   const isToday = selectedDate === today;
   const displayDate = isToday ? getLocalDisplayDate() : formatDisplayDate(selectedDate);
@@ -90,6 +97,29 @@ export default function Today() {
       rant: rant.trim() || null,
     });
     setExistingEntry(true);
+
+    // Celebratory feedback
+    playDing();
+    confetti({
+      particleCount: 90,
+      spread: 70,
+      origin: { y: 0.65 },
+      colors: ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF', '#E8BAF5'],
+    });
+
+    // Check for streak milestones
+    try {
+      const moods = await getMoodsForUser(name);
+      const dates = moods.map((m) => m.date);
+      const streak = calculateStreak(dates, selectedDate);
+      const milestone = getStreakMilestone(streak);
+      if (milestone !== null) {
+        setToast({ type: 'achievement', message: milestoneMessage(milestone as StreakMilestone) });
+      }
+    } catch {
+      // Streak check is best-effort — don't surface errors to the user
+    }
+
     if (Math.random() < BSOD_PROBABILITY) {
       setShowBsod(true);
     } else {
@@ -118,6 +148,13 @@ export default function Today() {
     <>
       {showBsod && <Bsod onDismiss={handleBsodDismiss} />}
       <div className="space-y-3">
+        {toast && (
+          <Toast95
+            message={toast.message}
+            type={toast.type}
+            onDismiss={dismissToast}
+          />
+        )}
       <p className="text-[11px] text-[var(--text)]">
         hey {name} · {displayDate}
       </p>
