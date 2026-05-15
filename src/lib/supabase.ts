@@ -112,3 +112,44 @@ export async function refreshThemesAI(name: string): Promise<ThemeSummary[]> {
   return (data as { themes?: ThemeSummary[] }).themes ?? [];
 }
 
+export const REACTION_EMOJIS = ['🫂', '💖', '😭', '🔥'] as const;
+export type ReactionEmoji = typeof REACTION_EMOJIS[number];
+
+export interface Reaction {
+  id?: string;
+  entry_id: string;
+  reactor_user_id: string;
+  emoji: string;
+  created_at?: string;
+}
+
+export async function getReactionsForEntry(entryId: string) {
+  const { data, error } = await supabase
+    .from('reactions')
+    .select('*')
+    .eq('entry_id', entryId);
+
+  if (error) throw error;
+  return (data as Reaction[]) ?? [];
+}
+
+export async function addReaction(entryId: string, reactorUserId: string, emoji: string) {
+  const { error } = await supabase
+    .from('reactions')
+    .insert({ entry_id: entryId, reactor_user_id: reactorUserId, emoji });
+
+  // ignore duplicate-key errors (unique constraint), treat as already-present
+  if (error && error.code !== '23505') throw error;
+}
+
+export async function removeReaction(entryId: string, reactorUserId: string, emoji: string) {
+  const { error } = await supabase
+    .from('reactions')
+    .delete()
+    .eq('entry_id', entryId)
+    .eq('reactor_user_id', reactorUserId)
+    .eq('emoji', emoji);
+
+  if (error) throw error;
+}
+
