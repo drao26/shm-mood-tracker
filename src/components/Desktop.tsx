@@ -144,8 +144,7 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
       const DRAG_THRESHOLD = 4;
       if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
       try {
-        (dragState.target as Element & { setPointerCapture: (id: number) => void })
-          .setPointerCapture(e.pointerId);
+        dragState.target.setPointerCapture(e.pointerId);
       } catch {
         /* ignore — capture may fail if pointer is already gone */
       }
