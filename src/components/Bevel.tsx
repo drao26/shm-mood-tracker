@@ -8,10 +8,7 @@ interface BevelProps {
 }
 
 export default function Bevel({ type, children, className = '', style }: BevelProps) {
-  const borders =
-    type === 'outset'
-      ? 'border-t-[var(--chrome-light)] border-l-[var(--chrome-light)] border-b-[var(--chrome-dark)] border-r-[var(--chrome-dark)]'
-      : 'border-t-[var(--chrome-dark)] border-l-[var(--chrome-dark)] border-b-[var(--chrome-light)] border-r-[var(--chrome-light)]';
+  const borders = type === 'outset' ? 'border95-outset' : 'border95-inset';
 
   return (
     <div className={`border-2 ${borders} ${className}`} style={style}>
