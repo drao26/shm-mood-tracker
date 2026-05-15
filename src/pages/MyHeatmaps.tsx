@@ -160,7 +160,7 @@ export default function MyHeatmaps({ overrideName }: MyHeatmapsProps) {
         {themesError && (
           <p className="text-[11px] text-[var(--accent)] mb-1">{themesError}</p>
         )}
-        <ThemeChips themes={themes} />
+        <ThemeChips themes={themes} moods={moods} />
       </div>
 
       <TopMoments moods={moods} />
