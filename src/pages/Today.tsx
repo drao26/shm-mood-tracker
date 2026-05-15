@@ -10,7 +10,7 @@ import { getTodayMood, getMoodsForUser, isSupabaseConfigured, upsertMood } from 
 import { moodScale } from '../lib/palette';
 import { getLocalDate, getLocalDisplayDate, formatDisplayDate } from '../lib/dateUtils';
 import { playDing } from '../lib/sound';
-import { calculateStreak, getStreakMilestone, milestoneMessage, StreakMilestone } from '../lib/streak';
+import { calculateStreak, getStreakMilestone, milestoneMessage } from '../lib/streak';
 
 export default function Today() {
   const name = localStorage.getItem('shm-user');
@@ -119,7 +119,7 @@ export default function Today() {
       const streak = calculateStreak(dates, selectedDate);
       const milestone = getStreakMilestone(streak);
       if (milestone !== null) {
-        setToast({ type: 'achievement', message: milestoneMessage(milestone as StreakMilestone) });
+        setToast({ type: 'achievement', message: milestoneMessage(milestone) });
       }
     } catch {
       // Streak check is best-effort — don't surface errors to the user
