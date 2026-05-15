@@ -14,8 +14,12 @@ export default function TopMoments({ moods }: TopMomentsProps) {
   const best = sorted[0];
   const worst = sorted[sorted.length - 1];
 
-  function quote(m: MoodEntry) {
+  function bestQuote(m: MoodEntry) {
     return m.gratitude?.trim() || m.rant?.trim() || '';
+  }
+
+  function worstQuote(m: MoodEntry) {
+    return m.rant?.trim() || m.gratitude?.trim() || '';
   }
 
   function formatDate(dateStr: string) {
@@ -36,7 +40,7 @@ export default function TopMoments({ moods }: TopMomentsProps) {
           <p className="text-[11px] font-bold text-[var(--text)] mb-0.5">
             🌈 best day · {formatDate(best.date)} · {best.score}/10
           </p>
-          <p className="text-[11px] text-[var(--text)] italic">"{quote(best)}"</p>
+          <p className="text-[11px] text-[var(--text)] italic">"{bestQuote(best)}"</p>
         </div>
       )}
       {worst && worst.date !== best?.date && (
@@ -50,7 +54,7 @@ export default function TopMoments({ moods }: TopMomentsProps) {
           <p className="text-[11px] font-bold text-[var(--text)] mb-0.5">
             🌧️ toughest day · {formatDate(worst.date)} · {worst.score}/10
           </p>
-          <p className="text-[11px] text-[var(--text)] italic">"{quote(worst)}"</p>
+          <p className="text-[11px] text-[var(--text)] italic">"{worstQuote(worst)}"</p>
         </div>
       )}
     </div>
