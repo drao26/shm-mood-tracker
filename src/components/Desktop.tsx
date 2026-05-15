@@ -82,6 +82,8 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
     startY: number;
     originX: number;
     originY: number;
+    captured: boolean;
+    target: Element;
   } | null>(null);
 
   // Show welcome window first, then auto-open today after 2s
@@ -106,6 +108,8 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   const handleIconPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>, iconId: string, index: number) => {
     const area = desktopAreaRef.current;
     if (!area) return;
+    // Only react to primary mouse button / touch / pen
+    if (e.button !== undefined && e.button !== 0) return;
     const current = desktop.iconPositions[iconId] ?? getDefaultIconPosition(index);
     dragStateRef.current = {
       iconId,
@@ -114,8 +118,14 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
       startY: e.clientY,
       originX: current.x,
       originY: current.y,
+      captured: false,
+      target: e.currentTarget,
     };
-    e.currentTarget.setPointerCapture(e.pointerId);
+    // NOTE: do NOT call setPointerCapture here. Capturing the pointer on
+    // pointerdown suppresses the browser's dblclick event in Chromium,
+    // which prevents desktop icons from opening their windows on
+    // double-click. Capture is deferred until an actual drag is detected
+    // in handleIconPointerMove (past a small movement threshold).
     setSelectedIcon(iconId);
     e.stopPropagation();
   }, [desktop.iconPositions]);
@@ -127,6 +137,20 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
 
     const dx = e.clientX - dragState.startX;
     const dy = e.clientY - dragState.startY;
+
+    // Start capturing the pointer only once movement exceeds a small
+    // threshold; this leaves clicks/double-clicks intact.
+    if (!dragState.captured) {
+      const DRAG_THRESHOLD = 4;
+      if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+      try {
+        dragState.target.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore — capture may fail if pointer is already gone */
+      }
+      dragState.captured = true;
+    }
+
     const maxX = Math.max(0, area.clientWidth - 68);
     const maxY = Math.max(0, area.clientHeight - 88);
     const x = Math.max(0, Math.min(maxX, dragState.originX + dx));
