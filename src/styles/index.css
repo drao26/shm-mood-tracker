@@ -57,6 +57,21 @@ body {
   color: var(--text);
 }
 
+/* Spring/bounce animation for mood face */
+@keyframes mood-bounce {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.4); }
+  50%  { transform: scale(0.88); }
+  70%  { transform: scale(1.15); }
+  85%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.mood-bounce {
+  display: inline-block;
+  animation: mood-bounce 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
 .mood-mascot {
   position: relative;
   width: 160px;
