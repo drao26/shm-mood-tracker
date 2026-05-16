@@ -16,6 +16,7 @@ alter table moods enable row level security;
 
 -- permissive policy: allow all operations for anonymous users
 -- this is a private 3-person tool behind an unguessable URL
+drop policy if exists "allow all for anon" on moods;
 create policy "allow all for anon"
   on moods
   for all
@@ -35,6 +36,7 @@ create table if not exists theme_summaries (
 
 alter table theme_summaries enable row level security;
 
+drop policy if exists "allow all for anon" on theme_summaries;
 create policy "allow all for anon"
   on theme_summaries
   for all
@@ -56,6 +58,7 @@ create index if not exists reactions_entry_id_idx on reactions(entry_id);
 
 alter table reactions enable row level security;
 
+drop policy if exists "allow all for anon" on reactions;
 create policy "allow all for anon"
   on reactions
   for all

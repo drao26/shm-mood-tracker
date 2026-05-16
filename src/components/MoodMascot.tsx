@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getMoodPreview, MOOD_PREVIEW_EVENT, MOOD_PREVIEW_KEY } from '../lib/moodSignal';
 import PixelEmoji from './PixelEmoji';
+import { PixelClippy } from './PixelClippy';
 
 type MascotMode = 'idle' | 'neutral' | 'storm' | 'sunny';
 const REACTION_DURATION_MS = 900;
@@ -155,9 +156,13 @@ export default function MoodMascot() {
         <div className="mood-mascot__status">
           {score === null ? 'mood buddy · idle' : `mood buddy · ${score}/10`}
         </div>
+        <div className="mood-mascot__shadow" />
 
-        <div className="mood-mascot__tile">
-          <PixelEmoji emoji={emojiByMode[mode]} size={36} pixelSize={20} />
+        <div className="mood-mascot__ghost-wrap">
+          <PixelClippy mode={mode} reacting={reacting} />
+          <div className="mood-mascot__weather-badge">
+            <PixelEmoji emoji={emojiByMode[mode]} size={22} pixelSize={16} />
+          </div>
         </div>
       </div>
     </div>

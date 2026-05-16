@@ -94,16 +94,36 @@ body {
 
 .mood-mascot {
   position: relative;
-  width: 76px;
+  width: 110px;
   padding-top: 18px;
 }
 
-.mood-mascot__tile {
+.mood-mascot__ghost-wrap {
   position: relative;
-  z-index: 1;
-  width: 56px;
-  height: 56px;
+  width: 96px;
+  height: 96px;
   margin: 0 auto;
+  animation: mascot-bob 4.5s ease-in-out infinite;
+}
+
+.mood-mascot--reacting .mood-mascot__ghost-wrap {
+  animation:
+    mascot-react 0.9s ease,
+    mascot-bob 4.5s ease-in-out infinite 0.9s;
+}
+
+.mood-mascot__ghost-wrap .mood-mascot__art {
+  animation: none;
+  width: 96px;
+  height: 96px;
+}
+
+.mood-mascot__weather-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,14 +132,7 @@ body {
   box-shadow:
     inset -2px -2px 0 var(--chrome-darker),
     inset 2px 2px 0 var(--chrome-light),
-    3px 3px 0 rgba(110, 106, 122, 0.25);
-  animation: mascot-bob 4.5s ease-in-out infinite;
-}
-
-.mood-mascot--reacting .mood-mascot__tile {
-  animation:
-    mascot-react 0.9s ease,
-    mascot-bob 4.5s ease-in-out infinite 0.9s;
+    2px 2px 0 rgba(110, 106, 122, 0.25);
 }
 
 .mood-mascot__bubble {
