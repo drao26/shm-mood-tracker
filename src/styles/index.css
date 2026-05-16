@@ -92,16 +92,6 @@ body {
   animation: mood-bounce 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-.emoji-pixelated {
-  display: inline-block;
-  font-size: 2em;
-  transform: scale(0.5) translateZ(0);
-  transform-origin: center;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-}
-
 .mood-mascot {
   position: relative;
   width: 120px;
@@ -168,9 +158,6 @@ body {
   height: 120px;
   overflow: visible;
   animation: mascot-bob 4.5s ease-in-out infinite;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
 }
 
 .mood-mascot__shadow {
