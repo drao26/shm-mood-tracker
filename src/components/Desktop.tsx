@@ -284,7 +284,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
     april: "april's profile",
     angie: "angie's profile",
     deepthi: "deepthi's profile",
-    'mood map': 'mood map',
+    'mood map': 'swedish house mafia mood map',
   };
 
   const iconMap: Record<string, string> = {
@@ -323,7 +323,7 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[var(--desktop-bg)]">
+    <div className="h-screen w-screen flex flex-col bg-[var(--desktop-bg)] relative">
       {/* tab bar */}
       <div className="flex bg-[var(--chrome)] border-b-2 border-b-[var(--chrome-dark)] overflow-x-auto shrink-0">
         {tabs.map((t) => {
@@ -361,6 +361,8 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
           {renderContent()}
         </Window>
       </div>
+
+      <MoodMascot />
 
       <WeeklyDigestPopup userName={userName} />
     </div>
