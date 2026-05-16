@@ -93,9 +93,10 @@ body {
 }
 
 .emoji-pixelated {
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
 }
 
 .mood-mascot {
@@ -164,9 +165,7 @@ body {
   height: 120px;
   overflow: visible;
   animation: mascot-bob 4.5s ease-in-out infinite;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
+  shape-rendering: crispEdges;
 }
 
 .mood-mascot__shadow {

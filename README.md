@@ -49,6 +49,32 @@ falls back to a rule-based theme dictionary.
 free tier limits: 10 req/min, 250 req/day on gemini-2.5-flash. with 3 users
 and weekly refresh that's still ~12 calls/month — well within limits.
 
+## install to your phone (pwa)
+
+shm moodtracker is a progressive web app (pwa) — it works offline and can be
+installed directly on your phone like a native app.
+
+### android
+
+1. open the app in chrome, samsung internet, or any chromium-based browser.
+2. tap the menu icon (⋮) in the address bar.
+3. select "install app" or "add to home screen".
+4. confirm on the popup — the app will install and appear on your home screen.
+
+### ios (iphone/ipad)
+
+1. open the app in safari.
+2. tap the share icon (box with arrow) at the bottom.
+3. scroll down and tap "add to home screen".
+4. enter a name (or keep the default) and tap "add".
+5. the app will appear on your home screen and work like a native app.
+
+### desktop (offline-first)
+
+- the app works in any modern browser (chrome, firefox, safari, edge).
+- it syncs your mood entries to the server whenever you're online.
+- all entries are cached locally — you can log your mood even without internet.
+
 ## security note
 
 this app has **no authentication**. rls is set to allow all operations for
