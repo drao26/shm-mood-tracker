@@ -1,0 +1,37 @@
+{
+  "name": "shm moodtracker",
+  "short_name": "moodtracker",
+  "description": "a private daily mood check-in app for three friends",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/images/heart-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/heart-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/heart-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/heart-icon.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ]
+}

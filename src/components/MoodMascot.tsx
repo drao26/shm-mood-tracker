@@ -190,19 +190,21 @@ export default function MoodMascot() {
             </g>
           )}
 
-          <path className="mood-mascot__arm mood-mascot__arm--left" d="M48 62c-8 2-14 8-16 18" />
-          <path className="mood-mascot__arm mood-mascot__arm--right" d="M88 62c10 1 16 8 20 18" />
+          <path className="mood-mascot__arm mood-mascot__arm--left" d="M48 62c-8 2-14 8-16 18" vectorEffect="non-scaling-stroke" />
+          <path className="mood-mascot__arm mood-mascot__arm--right" d="M88 62c10 1 16 8 20 18" vectorEffect="non-scaling-stroke" />
           <path
             className="mood-mascot__clip"
             d="M73 14c-21 0-34 15-34 37v29c0 21 13 34 30 34 18 0 29-12 29-30V49c0-12-8-20-20-20s-21 10-21 22v33c0 8 5 14 12 14s12-6 12-14V59"
+            vectorEffect="non-scaling-stroke"
           />
           <path
             className="mood-mascot__clip-highlight"
             d="M73 21c-16 0-26 12-26 30v29c0 17 10 27 22 27 13 0 21-9 21-23V49c0-8-5-13-12-13-8 0-14 7-14 15v33"
+            vectorEffect="non-scaling-stroke"
           />
           <ellipse className="mood-mascot__eye mood-mascot__eye--left" cx="67" cy="48" rx="4.5" ry="6.5" />
           <ellipse className="mood-mascot__eye mood-mascot__eye--right" cx="86" cy="48" rx="4.5" ry="6.5" />
-          <path className="mood-mascot__mouth" d={getMouthPath(mode)} />
+          <path className="mood-mascot__mouth" d={getMouthPath(mode)} vectorEffect="non-scaling-stroke" />
           <circle className="mood-mascot__cheek" cx="61" cy="57" r="3" />
           <circle className="mood-mascot__cheek" cx="92" cy="57" r="3" />
           <path className="mood-mascot__base" d="M52 112c4 7 12 11 21 11 9 0 17-4 22-11" />
