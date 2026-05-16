@@ -1,3 +1,6 @@
+// Canonical mood slider/trackbar component. This is the single source of truth
+// for slider behavior across the app (see Today.tsx and Calendar.tsx).
+// Update slider/trackbar appearance or interaction in this file.
 import { useCallback, useRef } from 'react';
 import { getSliderGradient } from '../lib/palette';
 import { moodEmojis } from '../lib/moodFaces';
