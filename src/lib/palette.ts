@@ -1,16 +1,16 @@
-// pastel rainbow scale for mood scores 0–10 (cool → warm)
+// dark rainbow scale for mood scores 0–10 (navy → yellow/orange)
 export const moodScale: string[] = [
-  '#B8CCE0', // 0 - soft steel blue
-  '#A8D8EA', // 1 - baby blue
-  '#B8E8D0', // 2 - soft mint
-  '#C8E6C0', // 3 - soft green
-  '#D8E8B0', // 4 - soft lime
-  '#F0F0B8', // 5 - soft yellow
-  '#F5E0A0', // 6 - butter
-  '#F5D0A0', // 7 - peach
-  '#F5C0A0', // 8 - soft orange
-  '#F5B0B0', // 9 - soft coral
-  '#F5A0C0', // 10 - soft rose
+  '#030B2E', // 0 - dark dark dark navy
+  '#0A1F54', // 1 - deep indigo-blue
+  '#0B3B7A', // 2 - deep blue
+  '#0A5A8A', // 3 - blue-cyan
+  '#0A7A6A', // 4 - deep teal
+  '#2C8A35', // 5 - deep green
+  '#5A8F1A', // 6 - olive green
+  '#8C8410', // 7 - yellow-olive
+  '#AD6B0A', // 8 - dark amber
+  '#C45A06', // 9 - deep orange
+  '#C77A00', // 10 - dark yellow/orange
 ];
 
 // empty day color
