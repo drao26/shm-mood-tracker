@@ -23,6 +23,39 @@ export function calculateStreak(dates: string[], upToDate: string): number {
   return streak;
 }
 
+/**
+ * Calculate the current streak as-of `today` from existing logged dates.
+ *
+ * Unlike `calculateStreak`, this does NOT artificially include `today`. It
+ * returns the number of consecutive days ending at today (or yesterday if
+ * today hasn't been logged yet). Used for read-only displays like the
+ * taskbar scoreboard.
+ *
+ * @param dates ISO date strings (YYYY-MM-DD) of all existing mood entries.
+ * @param today Today's date as YYYY-MM-DD in the user's local timezone.
+ * @returns Number of consecutive days in the streak (0 if no recent entry).
+ */
+export function currentStreak(dates: string[], today: string): number {
+  const dateSet = new Set(dates);
+  const [y, m, d] = today.split('-').map(Number);
+  let current = new Date(y, m - 1, d); // local midnight
+
+  const isoOf = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+  // If today isn't logged yet, the streak still continues if yesterday is logged.
+  if (!dateSet.has(isoOf(current))) {
+    current = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 1);
+  }
+
+  let streak = 0;
+  while (dateSet.has(isoOf(current))) {
+    streak++;
+    current = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 1);
+  }
+  return streak;
+}
+
 export const STREAK_MILESTONES = [3, 7, 14, 30, 100] as const;
 export type StreakMilestone = (typeof STREAK_MILESTONES)[number];
 

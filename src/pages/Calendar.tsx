@@ -6,6 +6,7 @@ import Button95 from '../components/Button95';
 import Trackbar from '../components/Trackbar';
 import Textarea95 from '../components/Textarea95';
 import Bsod, { BSOD_PROBABILITY } from '../components/Bsod';
+import Reactions from '../components/Reactions';
 
 const USERS = ['deepthi', 'april', 'angie'] as const;
 
@@ -270,6 +271,9 @@ export default function Calendar() {
             <p className="text-[11px] font-bold text-[var(--text)]">rant:</p>
             <p className="text-[11px] text-[var(--text)] whitespace-pre-wrap">"{entry.rant}"</p>
           </div>
+        )}
+        {currentUser && entry.id && selectedUser !== currentUser && (
+          <Reactions entryId={entry.id} currentUser={currentUser} />
         )}
       </div>
     );

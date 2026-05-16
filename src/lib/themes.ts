@@ -95,3 +95,37 @@ export function extractThemes(moods: MoodEntry[]): ThemeSummary[] {
     }))
     .sort((a, b) => b.count - a.count);
 }
+
+/**
+ * Return the mood entries that mention a given theme.
+ * Uses the keyword dictionary when the theme is a known rule-based key,
+ * otherwise falls back to matching the words of the theme key/label
+ * directly against the entry text (covers AI-generated theme keys).
+ */
+export function findEntriesForTheme(themeKey: string, moods: MoodEntry[]): MoodEntry[] {
+  if (!themeKey) return [];
+
+  const dictKeywords = themeDict[themeKey]?.keywords;
+  const fallbackKeywords = themeKey
+    .toLowerCase()
+    .replace(/[^\w\s']/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 2);
+  const keywords = dictKeywords ?? fallbackKeywords;
+  if (keywords.length === 0) return [];
+
+  return moods.filter((mood) => {
+    const text = `${mood.gratitude ?? ''} ${mood.rant ?? ''}`.toLowerCase();
+    if (!text.trim()) return false;
+    const words = text
+      .replace(/[^\w\s']/g, ' ')
+      .split(/\s+/)
+      .filter((w) => w.length > 1);
+    if (dictKeywords) {
+      return keywords.some((kw) => words.includes(kw));
+    }
+    // For AI themes, allow substring match so multi-word keys like
+    // "family conflict" still find entries containing "conflict".
+    return keywords.some((kw) => words.includes(kw) || text.includes(kw));
+  });
+}

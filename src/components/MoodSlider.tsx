@@ -1,5 +1,5 @@
 import { getSliderGradient } from '../lib/palette';
-import { moodFaces } from '../lib/moodFaces';
+import { moodEmojis } from '../lib/moodFaces';
 
 interface MoodSliderProps {
   value: number;
@@ -24,7 +24,7 @@ export default function MoodSlider({ value, onChange }: MoodSliderProps) {
       <div className="flex items-center justify-between">
         <span className="text-xs text-gray-400">0</span>
         <div className="flex flex-col items-center">
-          <span key={value} className="mood-bounce text-5xl">{moodFaces[value]}</span>
+          <span key={value} className="mood-bounce text-5xl">{moodEmojis[value]}</span>
           <span className="text-sm font-medium text-gray-600 mt-1">{value}</span>
         </div>
         <span className="text-xs text-gray-400">10</span>

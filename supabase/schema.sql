@@ -41,3 +41,24 @@ create policy "allow all for anon"
   to anon
   using (true)
   with check (true);
+
+-- reactions table (pastel emoji reactions on a friend's entry)
+create table if not exists reactions (
+  id uuid primary key default gen_random_uuid(),
+  entry_id uuid not null references moods(id) on delete cascade,
+  reactor_user_id text not null check (reactor_user_id in ('april', 'angie', 'deepthi')),
+  emoji text not null,
+  created_at timestamptz default now(),
+  unique (entry_id, reactor_user_id, emoji)
+);
+
+create index if not exists reactions_entry_id_idx on reactions(entry_id);
+
+alter table reactions enable row level security;
+
+create policy "allow all for anon"
+  on reactions
+  for all
+  to anon
+  using (true)
+  with check (true);
