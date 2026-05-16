@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import Button95 from './Button95';
 import StartMenu from './StartMenu';
 import { DesktopWindow } from '../hooks/useDesktop';
+import { getAllMoods, isSupabaseConfigured, MoodEntry } from '../lib/supabase';
+import { currentStreak } from '../lib/streak';
+import { getLocalDate } from '../lib/dateUtils';
 
 interface TaskbarProps {
   windows: DesktopWindow[];
@@ -9,6 +12,65 @@ interface TaskbarProps {
   onTaskClick: (id: string) => void;
   userName: string | null;
   onSwitchUser: () => void;
+}
+
+const FRIENDS = ['april', 'angie', 'deepthi'] as const;
+type Friend = (typeof FRIENDS)[number];
+
+function FriendStreaks() {
+  const [streaks, setStreaks] = useState<Record<Friend, number>>({ april: 0, angie: 0, deepthi: 0 });
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const moods = await getAllMoods();
+        if (cancelled) return;
+        const today = getLocalDate();
+        const next: Record<Friend, number> = { april: 0, angie: 0, deepthi: 0 };
+        for (const friend of FRIENDS) {
+          const dates = moods
+            .filter((m: MoodEntry) => m.name === friend)
+            .map((m: MoodEntry) => m.date);
+          next[friend] = currentStreak(dates, today);
+        }
+        setStreaks(next);
+      } catch {
+        // silently ignore — scoreboard is best-effort
+      }
+    }
+
+    load();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    // refresh periodically in case a friend logs while window stays open
+    const id = setInterval(load, 5 * 60 * 1000);
+    return () => {
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibility);
+      clearInterval(id);
+    };
+  }, []);
+
+  return (
+    <div className="border border95-inset flex items-center h-[22px] px-1 gap-2">
+      {FRIENDS.map((friend) => (
+        <span
+          key={friend}
+          className="text-[11px] text-[var(--text)] flex items-center gap-[2px]"
+          title={`${friend}'s current check-in streak: ${streaks[friend]} day${streaks[friend] === 1 ? '' : 's'}`}
+        >
+          <span className="capitalize">{friend[0]}</span>
+          <span aria-hidden="true">🔥</span>
+          <span>{streaks[friend]}</span>
+        </span>
+      ))}
+    </div>
+  );
 }
 
 function Clock() {
@@ -63,6 +125,9 @@ export default function Taskbar({ windows, activeId, onTaskClick, userName, onSw
           </Button95>
         ))}
       </div>
+
+      {/* friends' streaks scoreboard */}
+      <FriendStreaks />
 
       {/* clock + user */}
       <div className="border border95-inset flex items-center h-[22px] px-1">
