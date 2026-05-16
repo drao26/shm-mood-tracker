@@ -10,6 +10,7 @@ import MyHeatmaps from '../pages/MyHeatmaps';
 import MoodMap from '../pages/MoodMap';
 import Calendar from '../pages/Calendar';
 import Minesweeper from '../pages/Minesweeper';
+import WeeklyDigestPopup from './WeeklyDigest';
 
 interface DesktopProps {
   userName: string | null;
@@ -245,6 +246,8 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
         userName={userName}
         onSwitchUser={onSwitchUser}
       />
+
+      <WeeklyDigestPopup userName={userName} />
     </div>
   );
 }
@@ -358,6 +361,8 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
           {renderContent()}
         </Window>
       </div>
+
+      <WeeklyDigestPopup userName={userName} />
     </div>
   );
 }
