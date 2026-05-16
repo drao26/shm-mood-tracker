@@ -78,7 +78,7 @@ export default function Trackbar({ value, min = 0, max = 10, onChange }: Trackba
       </div>
       {/* emoji + number readout */}
       <div className="flex items-center justify-center gap-2 mt-2">
-        <span key={value} className="mood-bounce text-5xl">{moodEmojis[value]}</span>
+        <span key={value} className="mood-bounce text-2xl emoji-pixelated">{moodEmojis[value]}</span>
         <span className="text-[12px] text-[var(--text)]">{value}</span>
       </div>
     </div>

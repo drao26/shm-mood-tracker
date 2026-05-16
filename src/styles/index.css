@@ -92,10 +92,16 @@ body {
   animation: mood-bounce 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
+.emoji-pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
 .mood-mascot {
   position: relative;
-  width: 160px;
-  padding-top: 18px;
+  width: 120px;
+  padding-top: 14px;
 }
 
 .mood-mascot__bubble {
@@ -138,7 +144,7 @@ body {
 .mood-mascot__status {
   position: absolute;
   top: 0;
-  left: 20px;
+  left: 15px;
   padding: 2px 8px;
   border: 2px solid var(--chrome-darker);
   background: linear-gradient(to right, var(--accent), var(--accent-light));
@@ -154,18 +160,21 @@ body {
   position: relative;
   z-index: 1;
   display: block;
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
   overflow: visible;
   animation: mascot-bob 4.5s ease-in-out infinite;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 .mood-mascot__shadow {
   position: absolute;
-  bottom: 8px;
-  left: 32px;
-  width: 98px;
-  height: 18px;
+  bottom: 6px;
+  left: 24px;
+  width: 75px;
+  height: 14px;
   border-radius: 999px;
   background: rgba(81, 81, 93, 0.18);
   filter: blur(1px);
