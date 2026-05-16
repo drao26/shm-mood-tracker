@@ -5,143 +5,44 @@ interface PixelClippyProps {
   reacting: boolean;
 }
 
-const PIXEL_SIZE = 2; // Each pixel is this many SVG units
+
 
 /**
  * Generates a pixelated Clippy character as SVG.
  * Uses small rectangles to create retro pixel art style.
  */
-export function PixelClippy({ mode, reacting }: PixelClippyProps) {
-  // Clip shape (main body) - rotated slightly based on mode
-  const rotation = reacting ? 'rotate(-5 68 70)' : 'rotate(0 68 70)';
+export function PixelClippy({ mode }: PixelClippyProps) {
+  // Ghost color by mood
+  let ghostColor = '#B8E8D0'; // default mint
+  if (mode === 'storm') ghostColor = '#A8C5DD'; // blue
+  if (mode === 'sunny') ghostColor = '#FFD0E0'; // pink
+  if (mode === 'neutral') ghostColor = '#FFF5B8'; // yellow
 
-  // Base color for body
-  const bodyColor = '#9B8BA1';
-  const highlightColor = '#D4C1E8';
-  const darkColor = '#5B4B6B';
+  // Eye direction by mood
+  let eyeDx = 0;
+  if (mode === 'storm') eyeDx = -2;
+  if (mode === 'sunny') eyeDx = 2;
 
   return (
-    <svg
-      viewBox="0 0 140 140"
-      className="mood-mascot__art"
-      role="img"
-      aria-label="Mood mascot"
-    >
-      {/* Shadow */}
-      <ellipse cx="70" cy="120" rx="45" ry="12" fill="rgba(81, 81, 93, 0.18)" />
-
-      {/* Main clip body - pixelated */}
-      <g transform={rotation}>
-        {/* Upper clip section */}
-        {[
-          { x: 50, y: 30 },
-          { x: 58, y: 30 },
-          { x: 66, y: 30 },
-          { x: 74, y: 30 },
-          { x: 82, y: 30 },
-          { x: 45, y: 38 },
-          { x: 53, y: 38 },
-          { x: 61, y: 38 },
-          { x: 69, y: 38 },
-          { x: 77, y: 38 },
-          { x: 85, y: 38 },
-          { x: 45, y: 46 },
-          { x: 53, y: 46 },
-          { x: 61, y: 46 },
-          { x: 69, y: 46 },
-          { x: 77, y: 46 },
-          { x: 85, y: 46 },
-          { x: 45, y: 54 },
-          { x: 53, y: 54 },
-          { x: 61, y: 54 },
-          { x: 69, y: 54 },
-          { x: 77, y: 54 },
-          { x: 85, y: 54 },
-          { x: 45, y: 62 },
-          { x: 53, y: 62 },
-          { x: 61, y: 62 },
-          { x: 69, y: 62 },
-          { x: 77, y: 62 },
-          { x: 85, y: 62 },
-        ].map((pos, i) => (
-          <rect
-            key={`body-${i}`}
-            x={pos.x}
-            y={pos.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={bodyColor}
-          />
-        ))}
-
-        {/* Highlight on clip */}
-        {[
-          { x: 58, y: 30 },
-          { x: 66, y: 30 },
-          { x: 61, y: 38 },
-          { x: 69, y: 38 },
-          { x: 61, y: 46 },
-          { x: 69, y: 46 },
-        ].map((pos, i) => (
-          <rect
-            key={`highlight-${i}`}
-            x={pos.x}
-            y={pos.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={highlightColor}
-          />
-        ))}
-      </g>
-
+    <svg viewBox="0 0 48 48" className="mood-mascot__art" width={96} height={96}>
+      {/* Ghost body */}
+      <rect x="8" y="12" width="32" height="24" rx="16" fill={ghostColor} />
+      {/* Wavy bottom */}
+      <rect x="8" y="36" width="4" height="8" rx="2" fill={ghostColor} />
+      <rect x="16" y="36" width="4" height="8" rx="2" fill={ghostColor} />
+      <rect x="24" y="36" width="4" height="8" rx="2" fill={ghostColor} />
+      <rect x="32" y="36" width="4" height="8" rx="2" fill={ghostColor} />
+      <rect x="36" y="36" width="4" height="8" rx="2" fill={ghostColor} />
       {/* Eyes */}
-      <circle cx="58" cy="60" r="4" fill={darkColor} />
-      <circle cx="82" cy="60" r="4" fill={darkColor} />
-      <circle cx="60" cy="58" r="1.5" fill={highlightColor} />
-      <circle cx="84" cy="58" r="1.5" fill={highlightColor} />
-
-      {/* Mouth */}
-      {mode === 'sunny' && (
-        <path
-          d="M 65 75 Q 70 80 75 75"
-          stroke={darkColor}
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-        />
-      )}
-      {mode === 'storm' && (
-        <path
-          d="M 65 75 L 75 75"
-          stroke={darkColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      )}
-      {mode === 'neutral' && (
-        <line
-          x1="65"
-          y1="75"
-          x2="75"
-          y2="75"
-          stroke={darkColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      )}
-      {mode === 'idle' && (
-        <path
-          d="M 65 77 Q 70 74 75 77"
-          stroke={darkColor}
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-        />
-      )}
-
-      {/* Cheeks */}
-      <circle cx="48" cy="68" r="3" fill={highlightColor} opacity="0.6" />
-      <circle cx="92" cy="68" r="3" fill={highlightColor} opacity="0.6" />
+      <ellipse cx={18 + eyeDx} cy="26" rx="4" ry="6" fill="#fff" />
+      <ellipse cx={30 + eyeDx} cy="26" rx="4" ry="6" fill="#fff" />
+      <ellipse cx={18 + eyeDx} cy="29" rx="2" ry="3" fill="#222" />
+      <ellipse cx={30 + eyeDx} cy="29" rx="2" ry="3" fill="#222" />
+      {/* Mouth by mood */}
+      {mode === 'sunny' && <ellipse cx="24" cy="34" rx="4" ry="2" fill="#222" />}
+      {mode === 'storm' && <rect x="20" y="34" width="8" height="2" rx="1" fill="#222" />}
+      {mode === 'neutral' && <rect x="21" y="34" width="6" height="2" rx="1" fill="#222" />}
+      {mode === 'idle' && <ellipse cx="24" cy="36" rx="3" ry="1.5" fill="#222" />}
     </svg>
   );
 }
