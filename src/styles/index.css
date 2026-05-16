@@ -94,8 +94,32 @@ body {
 
 .mood-mascot {
   position: relative;
-  width: 120px;
-  padding-top: 14px;
+  width: 76px;
+  padding-top: 18px;
+}
+
+.mood-mascot__tile {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--chrome);
+  border: 2px solid var(--chrome-dark);
+  box-shadow:
+    inset -2px -2px 0 var(--chrome-darker),
+    inset 2px 2px 0 var(--chrome-light),
+    3px 3px 0 rgba(110, 106, 122, 0.25);
+  animation: mascot-bob 4.5s ease-in-out infinite;
+}
+
+.mood-mascot--reacting .mood-mascot__tile {
+  animation:
+    mascot-react 0.9s ease,
+    mascot-bob 4.5s ease-in-out infinite 0.9s;
 }
 
 .mood-mascot__bubble {

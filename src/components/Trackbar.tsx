@@ -3,7 +3,8 @@
 // Update slider/trackbar appearance or interaction in this file.
 import { useCallback, useRef } from 'react';
 import { getSliderGradient } from '../lib/palette';
-import { getPixelEmojiUrl } from '../lib/pixelEmojis';
+import { moodFaces } from '../lib/moodFaces';
+import PixelEmoji from './PixelEmoji';
 
 interface TrackbarProps {
   value: number;
@@ -78,7 +79,12 @@ export default function Trackbar({ value, min = 0, max = 10, onChange }: Trackba
       </div>
       {/* emoji + number readout */}
       <div className="flex items-center justify-center gap-2 mt-2">
-        <img key={value} src={getPixelEmojiUrl(value)} alt="mood" className="mood-bounce w-8 h-8" />
+        <div
+          key={value}
+          className="mood-bounce border-2 border95-outset bg-[var(--chrome)] p-[2px] flex items-center justify-center"
+        >
+          <PixelEmoji emoji={moodFaces[value]} size={24} pixelSize={20} />
+        </div>
         <span className="text-[12px] text-[var(--text)]">{value}</span>
       </div>
     </div>

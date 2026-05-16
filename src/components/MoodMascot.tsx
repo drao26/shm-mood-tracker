@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getMoodPreview, MOOD_PREVIEW_EVENT, MOOD_PREVIEW_KEY } from '../lib/moodSignal';
-import { PixelClippy } from './PixelClippy';
+import PixelEmoji from './PixelEmoji';
 
 type MascotMode = 'idle' | 'neutral' | 'storm' | 'sunny';
 const REACTION_DURATION_MS = 900;
@@ -46,6 +46,13 @@ function pickLine(lines: string[], current?: string | null) {
   const pool = filtered.length > 0 ? filtered : lines;
   return pool[Math.floor(Math.random() * pool.length)];
 }
+
+const emojiByMode: Record<MascotMode, string> = {
+  idle: '❔',
+  neutral: '⛅',
+  storm: '🌧️',
+  sunny: '☀️',
+};
 
 
 
@@ -148,9 +155,10 @@ export default function MoodMascot() {
         <div className="mood-mascot__status">
           {score === null ? 'mood buddy · idle' : `mood buddy · ${score}/10`}
         </div>
-        <div className="mood-mascot__shadow" />
 
-        <PixelClippy mode={mode} reacting={reacting} />
+        <div className="mood-mascot__tile">
+          <PixelEmoji emoji={emojiByMode[mode]} size={36} pixelSize={20} />
+        </div>
       </div>
     </div>
   );

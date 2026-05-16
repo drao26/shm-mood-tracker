@@ -272,8 +272,12 @@ export default function Calendar() {
             <p className="text-[11px] text-[var(--text)] whitespace-pre-wrap">"{entry.rant}"</p>
           </div>
         )}
-        {currentUser && entry.id && selectedUser !== currentUser && (
-          <Reactions entryId={entry.id} currentUser={currentUser} />
+        {currentUser && entry.id && (
+          <Reactions
+            entryId={entry.id}
+            currentUser={currentUser}
+            readOnly={selectedUser === currentUser}
+          />
         )}
       </div>
     );
