@@ -3,7 +3,7 @@
 // Update slider/trackbar appearance or interaction in this file.
 import { useCallback, useRef } from 'react';
 import { getSliderGradient } from '../lib/palette';
-import { moodFaces } from '../lib/moodFaces';
+import { moodEmojis } from '../lib/moodFaces';
 
 interface TrackbarProps {
   value: number;
@@ -78,7 +78,7 @@ export default function Trackbar({ value, min = 0, max = 10, onChange }: Trackba
       </div>
       {/* emoji + number readout */}
       <div className="flex items-center justify-center gap-2 mt-2">
-        <span key={value} className="mood-bounce text-5xl">{moodFaces[value]}</span>
+        <span key={value} className="mood-bounce text-5xl">{moodEmojis[value]}</span>
         <span className="text-[12px] text-[var(--text)]">{value}</span>
       </div>
     </div>
