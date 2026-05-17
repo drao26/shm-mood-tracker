@@ -23,14 +23,8 @@ export default defineConfig({
         start_url: '/shm-mood-tracker/',
         icons: [
           {
-            src: 'images/piq_58417_400x400.png',
-            sizes: '400x400',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: 'images/sun.png',
-            sizes: '192x192',
+            src: 'images/mail.png',
+            sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
           },
