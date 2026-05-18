@@ -7,7 +7,7 @@ import {
   computeWeeklyDigest,
   digestShownKey,
   getLastWeekRange,
-  isMonday,
+  isSunday,
   WeeklyDigest,
 } from '../lib/weeklyDigest';
 
@@ -30,7 +30,7 @@ export default function WeeklyDigestPopup({ userName }: WeeklyDigestPopupProps) 
   useEffect(() => {
     if (!userName) return;
     const today = getLocalDate();
-    if (!isMonday(today)) return;
+    if (!isSunday(today)) return;
 
     const { start } = getLastWeekRange(today);
     const key = digestShownKey(start);
@@ -110,9 +110,9 @@ export default function WeeklyDigestPopup({ userName }: WeeklyDigestPopupProps) 
         >
           <div className="flex flex-col gap-3 p-1 text-[var(--text)]">
             <div>
-              <p className="text-[12px] font-bold">happy monday! ☀️</p>
+              <p className="text-[12px] font-bold">happy sunday! ☀️</p>
               <p className="text-[11px]">
-                here's how last week ({formatDisplayDate(weekStart)} – {formatDisplayDate(weekEnd)})
+                here's how this week ({formatDisplayDate(weekStart)} – {formatDisplayDate(weekEnd)})
                 went:
               </p>
             </div>

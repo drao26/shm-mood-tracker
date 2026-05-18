@@ -2,17 +2,36 @@
   "name": "shm moodtracker",
   "short_name": "moodtracker",
   "description": "a private daily mood check-in app for three friends",
-  "start_url": "/",
+  "start_url": "/shm-mood-tracker/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "scope": "/",
+  "scope": "/shm-mood-tracker/",
   "icons": [
     {
+<<<<<<< HEAD
       "src": "images/mail.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+=======
+      "src": "/shm-mood-tracker/images/piq_58417_400x400.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/shm-mood-tracker/images/piq_58417_400x400.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/shm-mood-tracker/images/piq_58417_400x400.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+>>>>>>> 79dd88a (fix: sunday weekly recap, pixel cat mascot, mobile PWA manifest)
     }
   ]
 }

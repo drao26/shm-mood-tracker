@@ -18,23 +18,22 @@ export function getDayOfWeek(iso: string): number {
   return new Date(y, m - 1, d).getDay();
 }
 
-/** True if the given ISO date is a Monday (local time). */
-export function isMonday(iso: string): boolean {
-  return getDayOfWeek(iso) === 1;
+/** True if the given ISO date is a Sunday (local time). */
+export function isSunday(iso: string): boolean {
+  return getDayOfWeek(iso) === 0;
 }
 
 /**
- * Return the ISO date range (inclusive) for "last week" relative to `today`,
- * defined as the most recent Monday→Sunday block strictly before `today`.
- * For a Monday `today`, this is the previous Mon–Sun.
+ * Return the ISO date range (inclusive) for the Mon→Sun week that contains
+ * `today`. When called on Sunday, `end` equals `today`, so this represents
+ * the week that is just wrapping up.
  */
 export function getLastWeekRange(today: string): { start: string; end: string } {
   const dow = getDayOfWeek(today); // 0 Sun … 6 Sat
   // Days from `today` back to the Monday that starts the current week
   const daysSinceMonday = (dow + 6) % 7; // Mon→0, Tue→1, …, Sun→6
-  const thisMonday = addDays(today, -daysSinceMonday);
-  const start = addDays(thisMonday, -7); // last week's Monday
-  const end = addDays(thisMonday, -1); // last week's Sunday
+  const start = addDays(today, -daysSinceMonday); // this week's Monday
+  const end = addDays(start, 6); // this week's Sunday
   return { start, end };
 }
 
