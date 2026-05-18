@@ -144,7 +144,13 @@ export default function MoodMascot() {
   }, [clearIdleTimers, mode, trackIdleTimer]);
 
   return (
-    <div className="pointer-events-none absolute bottom-5 right-5 z-40 flex items-end gap-3">
+    <div
+      className="pointer-events-none absolute z-40 flex items-end gap-3"
+      style={{
+        right: '20px',
+        bottom: 'calc(20px + env(safe-area-inset-bottom, 0px))',
+      }}
+    >
       <div
         className={`mood-mascot__bubble ${bubbleVisible ? 'mood-mascot__bubble--visible' : ''}`}
         aria-live="polite"

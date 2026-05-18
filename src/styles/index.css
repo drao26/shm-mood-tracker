@@ -95,7 +95,7 @@ body {
 .mood-mascot {
   position: relative;
   width: 110px;
-  padding-top: 18px;
+  padding-top: 34px;
 }
 
 .mood-mascot__ghost-wrap {
@@ -174,7 +174,7 @@ body {
 
 .mood-mascot__status {
   position: absolute;
-  top: 0;
+  top: -4px;
   left: 15px;
   padding: 2px 8px;
   border: 2px solid var(--chrome-darker);
@@ -185,6 +185,8 @@ body {
   letter-spacing: 0.02em;
   text-transform: lowercase;
   box-shadow: 2px 2px 0 rgba(110, 106, 122, 0.18);
+  z-index: 2;
+  white-space: nowrap;
 }
 
 .mood-mascot__art {

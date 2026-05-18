@@ -168,7 +168,10 @@ export default function Desktop({ userName, onSwitchUser }: DesktopProps) {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--desktop-bg)]">
+    <div
+      className="w-screen flex flex-col overflow-hidden bg-[var(--desktop-bg)]"
+      style={{ height: '100dvh' }}
+    >
       {/* desktop area */}
       <div
         ref={desktopAreaRef}
@@ -323,7 +326,10 @@ export function MobileShell({ userName, onSwitchUser }: DesktopProps) {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[var(--desktop-bg)] relative">
+    <div
+      className="w-screen flex flex-col bg-[var(--desktop-bg)] relative"
+      style={{ height: '100dvh' }}
+    >
       {/* tab bar */}
       <div className="flex bg-[var(--chrome)] border-b-2 border-b-[var(--chrome-dark)] overflow-x-auto shrink-0">
         {tabs.map((t) => {
