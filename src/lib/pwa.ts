@@ -11,6 +11,28 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
       import.meta.env.BASE_URL + 'sw.js',
       { scope: import.meta.env.BASE_URL },
     );
+
+    // When a new SW takes control, reload so the user sees the fresh bundle
+    // instead of the previously cached one.
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    });
+
+    // Detect new SW becoming available and let it activate immediately.
+    reg.addEventListener('updatefound', () => {
+      const nw = reg.installing;
+      if (!nw) return;
+      nw.addEventListener('statechange', () => {
+        if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+          // a previous SW is in control — tell the new one to take over
+          nw.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+    });
+
     return reg;
   } catch (e) {
     console.warn('[pwa] service worker registration failed:', e);

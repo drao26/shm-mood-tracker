@@ -11,6 +11,9 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,gif,webp,jpg,jpeg,woff,woff2}'],
         importScripts: ['push-sw.js'],
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
       },
       manifest: {
         name: 'shm mood tracker',
